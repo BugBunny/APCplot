@@ -7,7 +7,7 @@ As input, APCplot expects a data frame that should include columns named *age*, 
 ### setupHMDdata
 Ancillary function to download and reorganise the mortality data from the Human Mortality Database (HMD) at https://mortality.org for passing to APCplot. Note that users must first register on the site in order to download the data (Note also that, if you registered before June 2022, you need to re-register).
 
-### Examples
+### Examples - England and Wales
 ```
 Rates_lexis <- setupHMDdata(your_user_id, your_password, country_id = "GBRTENW", base_year = 1922L, length_yrs = 100L)
 APCplot(Rates_lexis, base_year = 1922)
