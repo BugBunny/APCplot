@@ -1,7 +1,7 @@
 ---
 title: "APCplot"
 author: "Ian Timæus"
-date: "20/02/2024"
+date: "23/02/2024"
 output: "R graphics plot (can be saved to various formats)"
 version: "0.2.1"
 ---
@@ -9,7 +9,7 @@ version: "0.2.1"
 ## Plot age-period-cohort rates on a grid of equilateral triangles using R
 
 ### APCplot
-Function that tortures Martin Smith's *Ternary* package <https://github.com/ms609/Ternary/> into drawing age-period-cohort (APC) plots of a set of rates (i.e. surface) using a triangular grid. It can produce the following plots:
+Function that tortures Martin Smith's *Ternary* package <https://github.com/ms609/Ternary/> into drawing age-period-cohort (APC) plots of a set of rates (i.e. a Lexis surface) using a triangular grid. It can produce the following plots:
 1. Plots of the rates or of the trend in them i.e. the ratios of the rates for successive periods (`change_in_rates = TRUE`).
 2. Plot the log measures or the untransformed rates/ratios (`log_rates = FALSE`).
 
@@ -34,24 +34,26 @@ The country codes are listed in the data section of the HMD website. Note that n
 ### Illustrative plots - Death rates in England and Wales
 ```
 Lexis <- setupHMDdata(your_user_id, your_password, country_id = "GBRTENW", base_year = 1922L, length_yrs = 100L)
+# Log rates for each sex
 APCplot(Lexis, base_year = 1922)
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/d47b3b97-d988-4604-8b5d-83a674afd0cf)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/f5a3b785-010e-4648-b759-5e1d86308de4)
 
 ```
- APCplot(Lexis, base_year = 1922, contour_plot = TRUE, sex_specific = FALSE)
+# Contour plot of the log rates for the two sexes combined
+APCplot(Lexis, base_year = 1922, contour_plot = TRUE, sex_specific = FALSE)
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/c901ff27-6d3a-4fba-837b-530a40f5aeed)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/bdcdef6d-3d23-4fa0-a8c0-de039279a610)
 
 ```
 APCplot(Lexis, base_year = 1922, sex_differences = TRUE)
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/0b4296da-7713-4518-9042-9b8007475fe5)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/f1318902-f2dc-49b2-9e48-7f05e5e96ccc)
 
 ```
 APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/c114fdc3-0f06-4d1a-80e6-0b37aaddbeb4)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/69bc5076-553a-4dad-b277-c977894eed8f)
 
 
 The R scripts were developed in R 4.3.2 under Windows 11.
