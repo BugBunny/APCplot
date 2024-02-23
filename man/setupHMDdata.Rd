@@ -31,8 +31,8 @@ Data frame with death rates by sex indexed by age, period and cohort.
 the Human Mortality Database (HMD) for passing to APCplot.
 }
 \details{
-Users must first register on the Human Mortality Database web site
-\link{https://mortality.org} in order to download the data (N. B. If you
+Users must first register on the Human Mortality Database
+\href{https://mortality.org}{web site} in order to download the data (N. B. If you
 registered before June 2022, you need to re-register).
 
 Note that not all countries have a century-long run of data and the plotting
@@ -40,5 +40,7 @@ function has not yet been generalized for use with axes of differing length
 (e.g. 50 years of data on ages 0 to 99).
 }
 \examples{
-setupHMDdata(userid, yourpassword, country_id = "GBRTENW", base_year = 1922)
+id <- "GBRTENW" 
+Lexis <- APCplot::setupHMDdata( , , country_id = id, base_year = 1922)
+save(Lexis, file = paste0("Lexis_", id, ".rda"))
 }

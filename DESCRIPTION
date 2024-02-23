@@ -3,8 +3,20 @@ Type: Package
 Version: 0.2.1
 Date: 2024-02-23
 Title: Triangular Age-Period-Cohort surfaces
-Description: Plot age-period-cohort surfaces (rates and rate ratios) on a grid of equilateral triangles
-Author: Ian Timaeus <ian.timaeus@lshtm.ac.uk>
+Description: Plot age-period-cohort surfaces (rates and rate ratios) on a grid
+   of equilateral triangles using Martin R Smith's Ternary package. An ancillary
+   function is provided to set up datasets from the Human Mortality Database for
+   use by APCplot.
+URL: https://github.com/BugBunny/APCplot
+Author: Ian Timaeus <ian.timaeus@lshtm.ac.uk> [aut, cre] (0000-0001-8011-4806)
 Maintainer: Ian Timaeus <ian.timaeus@lshtm.ac.uk>
-Roxygen: list(markdown = TRUE)
+Depends:
+   Ternary
+Imports:
+   HMDHFDplus,
+   PlotTools,
+   viridisLite
+License: MIT + file LICENSE
+Encoding: UTF-8
 RoxygenNote: 7.3.1
+Roxygen: list(markdown = TRUE)

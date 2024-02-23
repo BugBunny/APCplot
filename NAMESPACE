@@ -2,3 +2,7 @@
 
 export(APCplot)
 export(setupHMDdata)
+importFrom(Ternary,ColourTernary)
+importFrom(Ternary,TernaryContour)
+importFrom(Ternary,TernaryPlot)
+importFrom(Ternary,TernaryPointValues)

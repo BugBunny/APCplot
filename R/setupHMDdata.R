@@ -7,8 +7,8 @@
 
 #' 
 #' @details
-#' Users must first register on the Human Mortality Database web site 
-#' [https://mortality.org] in order to download the data (N. B. If you 
+#' Users must first register on the Human Mortality Database
+#' [web site](https://mortality.org) in order to download the data (N. B. If you 
 #' registered before June 2022, you need to re-register).
 #' 
 #' Note that not all countries have a century-long run of data and the plotting
@@ -25,24 +25,26 @@
 #' @export
 #'
 #' @examples
-#' setupHMDdata(userid, yourpassword, country_id = "GBRTENW", base_year = 1922)
+#' id <- "GBRTENW" 
+#' Lexis <- APCplot::setupHMDdata( , , country_id = id, base_year = 1922)
+#' save(Lexis, file = paste0("Lexis_", id, ".rda"))
 setupHMDdata <- function(user,
                          password,
                          country_id = "GBRTENW",
                          base_year = 1922L,
                          length_yrs = 100L) {
    # Download the deaths and exposure counts for the Lexis triangles
-   fn <- paste0("Deaths_", id, ".csv")
-   if (inherits(try(utils::read.csv(fn), silent = T), "try-error")) {
+   fn <- paste0("data/Deaths_", country_id, ".rda")
+   if (inherits(try(load(fn), silent = T), "try-error")) {
       Deaths <- HMDHFDplus::readHMDweb(country_id, "Deaths_lexis",
          user, password)
-      utils::write.csv(Deaths, file = fn)
+      save(Deaths, file = fn)
    }  
-   fn <- paste0("Exposures_", id, ".csv")
-   if (inherits(try(utils::read.csv(fn), silent = T), "try-error")) {
+   fn <- paste0("data/Exposures_", country_id, ".rda")
+   if (inherits(try(load(fn), silent = T), "try-error")) {
       Exposures <- HMDHFDplus::readHMDweb(country_id, "Exposures_lexis",
          user, password)
-      utils::write.csv(Exposures, file = fn)
+      save(Exposures, file = fn)
    }
    # Calculate the APC death rates by Sex and for the two Sexes combined
    Lexis <- cbind(Deaths[ , 1:3],
@@ -52,11 +54,9 @@ setupHMDdata <- function(user,
    colnames(Lexis)[(ncol(Lexis)-2):ncol(Lexis)] <- c("Women", "Men", "Rates")
 
    # Compute APC indices that run from 0 up, reversing the period axis
-   Lexis <- within(Lexis, {
-      age <- as.integer(Age)
-      coh <- as.integer(Cohort) - base_year
-      per <- base_year + length_yrs-1 - as.integer(Year)
-   })
+   Lexis[, "age"] <- as.integer(Lexis[, "Age"])
+   Lexis[, "coh"] <- as.integer(Lexis[, "Cohort"]) - base_year
+   Lexis[, "per"] <- base_year + length_yrs-1 - as.integer(Lexis[, "Year"])
    # Discard data on older ages and earlier dates (Data for the cohort born the 
    #  year prior to the base_year is kept to calculate decline into cohort 0)
    subset(Lexis, age < length_yrs & coh >= -1 &  per <= length_yrs)

@@ -17,7 +17,14 @@ APCplot(
 )
 }
 \arguments{
+\item{Lexis}{Data frame with the columns age, per, coh, Men, Women, Rates.
+The first 3 columns index the coordinates of the rates contained in the other
+3 columns. \link{setupHMDdata} prepares Lexis objects from the HMD data for a
+country.}
+
 \item{base_year}{Initial birth cohort}
+
+\item{length_yrs}{Number of cohorts required}
 
 \item{label_interval}{Interval in years between axis labels}
 
@@ -30,8 +37,6 @@ APCplot(
 \item{change_in_rates}{Plot the ratios of successive rates}
 
 \item{log_rates}{Plot the log rates or rate ratios}
-
-\item{length_years}{Number of cohorts required}
 }
 \value{
 R graphics plot that can be exported to multiple graphics formats.
@@ -51,6 +56,8 @@ The function is implemented by torturing Martin Smith's \link{Ternary} package
 into drawing APC surfaces.
 }
 \examples{
+setwd("APCplot")
+load ("data/Lexis_GBRTENW.rda")
 APCplot(Lexis, base_year = 1922)
 APCplot(Lexis, base_year = 1922, contour_plot = TRUE, sex_specific = FALSE)
 APCplot(Lexis, base_year = 1922, sex_differences = TRUE, log_rates = FALSE)

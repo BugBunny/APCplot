@@ -13,8 +13,12 @@
 #' The function is implemented by torturing Martin Smith's [Ternary] package
 #' into drawing APC surfaces.
 #' 
+#' @param Lexis Data frame with the columns age, per, coh, Men, Women, Rates. 
+#' The first 3 columns index the coordinates of the rates contained in the other 
+#' 3 columns. [setupHMDdata] prepares Lexis objects from the HMD data for a 
+#' country.
 #' @param base_year Initial birth cohort
-#' @param length_years Number of cohorts required
+#' @param length_yrs Number of cohorts required
 #' @param label_interval Interval in years between axis labels
 #' @param contour_plot Draw a contour plot
 #' @param sex_specific Plot men and women separately
@@ -24,6 +28,8 @@
 #' @return R graphics plot that can be exported to multiple graphics formats.
 #' @export
 #' @examples
+#' setwd("APCplot")
+#' load ("data/Lexis_GBRTENW.rda")
 #' APCplot(Lexis, base_year = 1922)
 #' APCplot(Lexis, base_year = 1922, contour_plot = TRUE, sex_specific = FALSE)
 #' APCplot(Lexis, base_year = 1922, sex_differences = TRUE, log_rates = FALSE)
@@ -37,7 +43,6 @@ APCplot <- function(Lexis,
                     sex_differences = FALSE,
                     change_in_rates = FALSE,
                     log_rates = TRUE) {
-   library("Ternary")
    # Store the rates for a single plot in the format expected by Ternary
    LookUpRates <- function(a, b, c) {
      env <- environment()
@@ -75,8 +80,8 @@ APCplot <- function(Lexis,
       period_ratios <- function(x) {
          x <- x / c(-1, x[1:length(x) - 1])
          # Discard tails so there's more visible variation to look at
-         left <- quantile(x, 0.01)
-         right <- quantile(x, 0.99)
+         left <- stats::quantile(x, 0.01)
+         right <- stats::quantile(x, 0.99)
          sapply(x, function(x) ifelse(x<left, left, ifelse(x>right, right, x)))
       }
       columns_of_rates <- c("Men", "Women", "Rates")
@@ -87,8 +92,8 @@ APCplot <- function(Lexis,
    if (sex_differences) {
       Lexis$Rates <- Lexis$Men / Lexis$Women
       # Discard tails so there's more visible variation to look at
-      left <- quantile(Lexis$Rates, 0.005)
-      right <- quantile(Lexis$Rates, 0.995)
+      left <- stats::quantile(Lexis$Rates, 0.005)
+      right <- stats::quantile(Lexis$Rates, 0.995)
       trunc_rates <- function(x) ifelse(x<left, left, ifelse(x>right, right, x))
       Lexis$Rates <- sapply(Lexis$Rates, trunc_rates) 
       sex_specific <- FALSE
@@ -98,12 +103,12 @@ APCplot <- function(Lexis,
    lexis_labels <- list(seq(0, length_yrs, by = length_yrs/label_interval),
       seq(base_year, base_year + length_yrs, by = length_yrs/label_interval),
       seq(base_year + length_yrs, base_year, by = -length_yrs/label_interval))
-   par(mar = rep(0.8, 4))
+   graphics::par(mar = rep(0.8, 4))
    
    env <- environment()
    if (sex_specific) {
       # Draw plots for the two Sexes side by side   
-      par(mfrow = c(1, 2))
+      graphics::par(mfrow = c(1, 2))
       # Match the spectrum of colours to the range of the rates for each Sex
       # so that the same rates get coloured identically on both plots
       mint <- min(Lexis$Men, Lexis$Women) + 0.000001
@@ -170,6 +175,6 @@ APCplot <- function(Lexis,
          xpd = NA      # Do not clip at edge of figure
       )  
    }
-   par(mfrow = c(1, 1))
+   graphics::par(mfrow = c(1, 1))
    invisible(values)
 }  # End of function APCplot
