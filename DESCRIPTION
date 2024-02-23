@@ -1,0 +1,10 @@
+Package: APCplot
+Type: Package
+Version: 0.2.1
+Date: 2024-02-23
+Title: Triangular Age-Period-Cohort surfaces
+Description: Plot age-period-cohort surfaces (rates and rate ratios) on a grid of equilateral triangles
+Author: Ian Timaeus <ian.timaeus@lshtm.ac.uk>
+Maintainer: Ian Timaeus <ian.timaeus@lshtm.ac.uk>
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
