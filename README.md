@@ -33,6 +33,7 @@ The country codes are listed in the data section of the HMD website. Note that n
 
 ### Illustrative plots - Death rates in England and Wales
 ```
+# Import death rates to a data frame from the Human Mortality Database 
 Lexis <- setupHMDdata(your_user_id, your_password, country_id = "GBRTENW", base_year = 1922L, length_yrs = 100L)
 # Log rates for each sex
 APCplot(Lexis, base_year = 1922)
@@ -46,11 +47,13 @@ APCplot(Lexis, base_year = 1922, contour_plot = TRUE, sex_specific = FALSE)
 ![image](https://github.com/BugBunny/APCplot/assets/10499045/bdcdef6d-3d23-4fa0-a8c0-de039279a610)
 
 ```
+# Ratios of the men's to the women's rates
 APCplot(Lexis, base_year = 1922, sex_differences = TRUE)
 ```
 ![image](https://github.com/BugBunny/APCplot/assets/10499045/f1318902-f2dc-49b2-9e48-7f05e5e96ccc)
 
 ```
+# Rates of change in the rates for each sex
 APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 ```
 ![image](https://github.com/BugBunny/APCplot/assets/10499045/69bc5076-553a-4dad-b277-c977894eed8f)
