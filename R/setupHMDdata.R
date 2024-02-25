@@ -25,8 +25,10 @@
 #' @export
 #'
 #' @examples
-#' id <- "GBRTENW" 
-#' Lexis <- APCplot::setupHMDdata( , , country_id = id, base_year = 1922)
+#' yourID <- readline(prompt = "Input HMD user id (without quotes): ")
+#' yourPW <- readline(prompt = "Input HMD password (without quotes): ")
+#' id <- "GBRTENW"
+#' Lexis <- setupHMDdata(yourID, yourPW, country_id = id, base_year = 1922)
 #' save(Lexis, file = paste0("Lexis_", id, ".rda"))
 setupHMDdata <- function(user,
                          password,
@@ -35,13 +37,13 @@ setupHMDdata <- function(user,
                          length_yrs = 100L) {
    # Download the deaths and exposure counts for the Lexis triangles
    fn <- paste0("data/Deaths_", country_id, ".rda")
-   if (inherits(try(load(fn), silent = T), "try-error")) {
+   if (file.exists(fn) == FALSE) {
       Deaths <- HMDHFDplus::readHMDweb(country_id, "Deaths_lexis",
          user, password)
       save(Deaths, file = fn)
    }  
    fn <- paste0("data/Exposures_", country_id, ".rda")
-   if (inherits(try(load(fn), silent = T), "try-error")) {
+   if (file.exists(fn) == FALSE) {
       Exposures <- HMDHFDplus::readHMDweb(country_id, "Exposures_lexis",
          user, password)
       save(Exposures, file = fn)
