@@ -56,10 +56,17 @@ The function is implemented by torturing Martin Smith's \link{Ternary} package
 into drawing APC surfaces.
 }
 \examples{
-setwd("APCplot")
-load ("data/Lexis_GBRTENW.rda")
+# Check whether APC data exist to be plotted
+fn <- "Lexis_GBRTENW.rda"
+errmsg <- "Create a Lexis object with setupHMDdata before running this code"
+try(if (file.exists(fn)==F) stop(errmsg, call. = F))
+load (fn)
+# Log rates for each sex
 APCplot(Lexis, base_year = 1922)
+# Contour plot of the log rates for the two sexes combined
 APCplot(Lexis, base_year = 1922, contour_plot = TRUE, sex_specific = FALSE)
+# Ratios of the men's to the women's rates
 APCplot(Lexis, base_year = 1922, sex_differences = TRUE, log_rates = FALSE)
+# Rates of change in the rates for each sex
 APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 }
