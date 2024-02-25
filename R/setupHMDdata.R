@@ -28,7 +28,7 @@
 #' yourID <- readline(prompt = "Input HMD user id (without quotes): ")
 #' yourPW <- readline(prompt = "Input HMD password (without quotes): ")
 #' id <- "GBRTENW"
-#' Lexis <- setupHMDdata(yourID, yourPW, country_id = id, base_year = 1922)
+#' Lexis <- setupHMDdata(user = yourID, password = yourPW, country_id = id, base_year = 1922)
 #' save(Lexis, file = paste0("Lexis_", id, ".rda"))
 setupHMDdata <- function(user,
                          password,
@@ -42,7 +42,7 @@ setupHMDdata <- function(user,
          user, password)
       save(Deaths, file = fn)
    }  else {
-      Deaths <- load(fn)
+      load(fn)
    }
    fn <- paste0("Exposures_", country_id, ".rda")
    if (file.exists(fn) == FALSE) {
@@ -50,7 +50,7 @@ setupHMDdata <- function(user,
          user, password)
       save(Exposures, file = fn)
    } else {
-      Exposures <- load(fn)
+     load(fn)
    }
    # Calculate the APC death rates by Sex and for the two Sexes combined
    Lexis <- cbind(Deaths[ , 1:3],

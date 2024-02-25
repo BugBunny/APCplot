@@ -29,10 +29,9 @@
 #' @export
 #' @examples
 #' # Check whether APC data exist to be plotted
-#' fn <- "Lexis_GBRTENW.rda"
 #' errmsg <- "Create a Lexis object with setupHMDdata before running this code"
-#' try(if (file.exists(fn)==F) stop(errmsg, call. = F))
-#' load (fn)
+#' try(if (file.exists("Lexis_GBRTENW.rda")==F) stop(errmsg, call. = F))
+#' load ("Lexis_GBRTENW.rda")
 #' # Log rates for each sex
 #' APCplot(Lexis, base_year = 1922)
 #' # Contour plot of the log rates for the two sexes combined
