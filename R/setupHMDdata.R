@@ -36,17 +36,21 @@ setupHMDdata <- function(user,
                          base_year = 1922L,
                          length_yrs = 100L) {
    # Download the deaths and exposure counts for the Lexis triangles
-   fn <- paste0("data/Deaths_", country_id, ".rda")
+   fn <- paste0("Deaths_", country_id, ".rda")
    if (file.exists(fn) == FALSE) {
       Deaths <- HMDHFDplus::readHMDweb(country_id, "Deaths_lexis",
          user, password)
       save(Deaths, file = fn)
-   }  
-   fn <- paste0("data/Exposures_", country_id, ".rda")
+   }  else {
+      Deaths <- load(fn)
+   }
+   fn <- paste0("Exposures_", country_id, ".rda")
    if (file.exists(fn) == FALSE) {
       Exposures <- HMDHFDplus::readHMDweb(country_id, "Exposures_lexis",
          user, password)
       save(Exposures, file = fn)
+   } else {
+      Exposures <- load(fn)
    }
    # Calculate the APC death rates by Sex and for the two Sexes combined
    Lexis <- cbind(Deaths[ , 1:3],
