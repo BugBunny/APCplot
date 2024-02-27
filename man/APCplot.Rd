@@ -52,9 +52,10 @@ rate ratios) on a grid of equilateral triangles.
 \details{
 The Lexis surfaces can comprise rates or trends in rates (ratios of rates for
 successive periods) and either be logged or not. \code{APCplot} can produce plots
-for two sub-groups side-by-side (e.g. men and women), a single plot for the
-full data, or plots of the sub-group rate ratios. Each of these types of plot
-can be drawn either for the individual APC triangles or as a contour plot.
+for several sub-groups on a grid (e.g. men and women), a single plot of the
+full data, or plots of the ratio of the rates in a pair of sub-groups. Each
+of these types of plot can be drawn either for the individual APC triangles
+or as a contour plot.
 
 The function is implemented by torturing Martin Smith's \link{Ternary} package
 into drawing APC surfaces.
