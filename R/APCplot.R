@@ -140,8 +140,8 @@ APCplot <- function(Lexis,
       graphics::par(mfrow = c(g_rows, g_cols))
       # Match spectrum of colours to the range of the rates for each sub-group
       # so that the same rates get coloured identically on both plots
-      minz <- integer(length = N)
-      maxz <- integer(length = N)
+      minz <- integer(length = 0)
+      maxz <- integer(length = 0)
       mint <- 1
       maxt <- 0
       for (group in sub_groups) {
@@ -155,12 +155,12 @@ APCplot <- function(Lexis,
       if (log_rates) mint <- log(mint)
       if (log_rates) maxt <- log(maxt) 
       drange <- maxt - mint
-      gp_start <- integer(length = N)
-      gp_end <- integer(length = N)
-      gp_n <- integer(length = N)
+      gp_start <- integer(length = 0)
+      gp_end <- integer(length = 0)
+      gp_n <- integer(length = 0)
       for (group in sub_groups) {
-         gp_start[group] <- 1 - (maxz[group] - minz[group]) / drange
-         gp_end[group] <- 1 - (minz[group] - minz[group]) / drange
+         gp_start[group] <- 1 - (maxz[group] - mint) / drange
+         gp_end[group] <- 1 - (minz[group] - mint) / drange
          gp_n[group] <- round(256L * (gp_end[group] - gp_start[group]))
       }
    } else {
