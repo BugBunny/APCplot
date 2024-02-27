@@ -1,7 +1,7 @@
 Package: APCplot
 Type: Package
-Version: 0.2.1
-Date: 2024-02-23
+Version: 0.2.2
+Date: 2024-02-27
 Title: Triangular Age-Period-Cohort surfaces
 Description: Plot age-period-cohort surfaces (rates and rate ratios) on a grid
    of equilateral triangles using Martin R Smith's Ternary package. An ancillary
