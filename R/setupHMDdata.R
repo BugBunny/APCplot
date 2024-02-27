@@ -65,5 +65,5 @@ setupHMDdata <- function(user,
    Lexis[, "per"] <- base_year + length_yrs-1 - as.integer(Lexis[, "Year"])
    # Discard data on older ages and earlier dates (Data for the cohort born the 
    #  year prior to the base_year is kept to calculate decline into cohort 0)
-   subset(Lexis, age < length_yrs & coh >= -1 &  per <= length_yrs)
+   subset(Lexis, age < length_yrs & coh >= -1 & per >= 0 & per <= length_yrs)
 }  # End of function setupHMDdata
