@@ -44,15 +44,15 @@ setupHMDdata <- function(user,
    }  else {
       load(fn)
    }
-   fn <- paste0("Exposures_", country_id, ".rda")
-   if (file.exists(fn) == FALSE) {
+   fname <- paste0("Exposures_", country_id, ".rda")
+   if (file.exists(fname) == FALSE) {
       Exposures <- HMDHFDplus::readHMDweb(country_id, "Exposures_lexis",
          user, password)
-      save(Exposures, file = fn)
+      save(Exposures, file = fname)
    } else {
-     load(fn)
+     load(fname)
    }
-   # Calculate the APC death rates by Sex and for the two Sexes combined
+   # Calculate the APC death rates by Sex and for the two sexes combined
    Lexis <- cbind(Deaths[ , 1:3],
       Deaths$Female / Exposures$Female,
       Deaths$Male / Exposures$Male,
@@ -64,6 +64,6 @@ setupHMDdata <- function(user,
    Lexis[, "coh"] <- as.integer(Lexis[, "Cohort"]) - base_year
    Lexis[, "per"] <- base_year + length_yrs-1 - as.integer(Lexis[, "Year"])
    # Discard data on older ages and earlier dates (Data for the cohort born the 
-   #  year prior to the base_year is kept to calculate decline into cohort 0)
+   # year prior to the base_year is kept to calculate decline into cohort 0)
    subset(Lexis, age < length_yrs & coh >= -1 &  per <= length_yrs)
 }  # End of function setupHMDdata

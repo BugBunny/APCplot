@@ -51,7 +51,7 @@ APCplot <- function(Lexis,
                     sub_groups = c("Men", "Women"),
                     group_ratios = FALSE,
                     change_in_rates = FALSE,
-                    log_rates = TRUE) {
+                    log_rates = TRUE)  {
    # Store the rates for a single plot in the format expected by Ternary
    LookUpRates <- function(a, b, c) {
       if (contour_plot) {

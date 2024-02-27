@@ -10,17 +10,18 @@ APCplot(
   length_yrs = 100L,
   label_interval = 10L,
   contour_plot = FALSE,
-  sex_specific = TRUE,
-  sex_differences = FALSE,
+  group_specific = TRUE,
+  sub_groups = c("Men", "Women"),
+  group_ratios = FALSE,
   change_in_rates = FALSE,
   log_rates = TRUE
 )
 }
 \arguments{
-\item{Lexis}{Data frame with the columns age, per, coh, Men, Women, Rates.
+\item{Lexis}{Data frame with columns for age, per, coh and each set of rates.
 The first 3 columns index the coordinates of the rates contained in the other
-3 columns. \link{setupHMDdata} prepares Lexis objects from the HMD data for a
-country.}
+columns. Store the rates for the total population in a column named "Rates".
+\link{setupHMDdata} prepares Lexis objects from the HMD data for a country.}
 
 \item{base_year}{Initial birth cohort}
 
@@ -30,13 +31,16 @@ country.}
 
 \item{contour_plot}{Draw a contour plot}
 
-\item{sex_specific}{Plot men and women separately}
+\item{group_specific}{Plot sub-groups (e.g. men and women) separately}
 
-\item{sex_differences}{Plot the men:women rate ratios}
+\item{sub_groups}{Names of the sub-groups. These should match the column
+names used for each sub-group in the data frame}
+
+\item{group_ratios}{Plot the ratio of the rates in a pair of sub-groups}
 
 \item{change_in_rates}{Plot the ratios of successive rates}
 
-\item{log_rates}{Plot the log rates or rate ratios}
+\item{log_rates}{Plot the logged rates or rate ratios}
 }
 \value{
 R graphics plot that can be exported to multiple graphics formats.
@@ -48,24 +52,24 @@ rate ratios) on a grid of equilateral triangles.
 \details{
 The Lexis surfaces can comprise rates or trends in rates (ratios of rates for
 successive periods) and either be logged or not. \code{APCplot} can produce plots
-for Men and Women side-by-side, a single plot for both sexes, or plots of the
-Men's:Women's rate ratios. Each of these types of plot can be drawn
-either for the individual APC triangles or as a contour plot.
+for two sub-groups side-by-side (e.g. men and women), a single plot for the
+full data, or plots of the sub-group rate ratios. Each of these types of plot
+can be drawn either for the individual APC triangles or as a contour plot.
 
 The function is implemented by torturing Martin Smith's \link{Ternary} package
 into drawing APC surfaces.
 }
 \examples{
-# Check whether APC data exist to be plotted
+# Check whether there are any APC data in the working directory to be plotted
 errmsg <- "Create a Lexis object with setupHMDdata before running this code"
-try(if (file.exists("Lexis_GBRTENW.rda")==F) stop(errmsg, call. = F))
+try(if (file.exists("Lexis_GBRTENW.rda")==FALSE) stop(errmsg, call. = FALSE))
 load ("Lexis_GBRTENW.rda")
 # Log rates for each sex
 APCplot(Lexis, base_year = 1922)
 # Contour plot of the log rates for the two sexes combined
-APCplot(Lexis, base_year = 1922, contour_plot = TRUE, sex_specific = FALSE)
+APCplot(Lexis, base_year = 1922, contour_plot = TRUE, group_specific = FALSE)
 # Ratios of the men's to the women's rates
-APCplot(Lexis, base_year = 1922, sex_differences = TRUE, log_rates = FALSE)
+APCplot(Lexis, base_year = 1922, group_ratios = TRUE, log_rates = FALSE)
 # Rates of change in the rates for each sex
 APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 }
