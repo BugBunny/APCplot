@@ -20,7 +20,6 @@
 #' [setupHMDdata] prepares Lexis objects from the HMD data for a country.
 #' @param base_year Initial birth cohort
 #' @param length_yrs Number of cohorts required
-#' @param label_interval Interval in years between axis labels
 #' @param contour_plot Draw a contour plot
 #' @param group_specific Plot sub-groups (e.g. men and women) separately
 #' @param sub_groups Names of the sub-groups. These should match the column
@@ -31,10 +30,7 @@
 #' @return R graphics plot that can be exported to multiple graphics formats.
 #' @export
 #' @examples
-#' # Check whether there are any APC data in the working directory to be plotted
-#' errmsg <- "Create a Lexis object with setupHMDdata before running this code"
-#' try(if (file.exists("Lexis_GBRTENW.rda")==FALSE) stop(errmsg, call. = FALSE))
-#' load ("Lexis_GBRTENW.rda")
+#' use (Lexis_ATLANTIS)
 #' # Log rates for each sex
 #' APCplot(Lexis, base_year = 1922)
 #' # Contour plot of the log rates for the two sexes combined
@@ -46,13 +42,12 @@
 APCplot <- function(Lexis,
                     base_year = 0L,
                     length_yrs = 100L,
-                    label_interval = 10L,
                     contour_plot = FALSE,
                     group_specific = TRUE,
                     sub_groups = c("Men", "Women"),
                     group_ratios = FALSE,
                     change_in_rates = FALSE,
-                    log_rates = TRUE)  {
+                    log_rates = TRUE) {
    # Store the rates for a single plot in the format expected by Ternary
    LookUpRates <- function(a, b, c) {
       if (contour_plot) {
@@ -125,13 +120,15 @@ APCplot <- function(Lexis,
    }
     
    # The period axis should run in reverse order to that on a true ternary plot
-   lexis_labels <- list(seq(0, length_yrs, by = length_yrs/label_interval),
-      seq(base_year, base_year + length_yrs, by = length_yrs/label_interval),
-      seq(base_year + length_yrs, base_year, by = -length_yrs/label_interval))
+   lexis_labels <- list(seq(0, length_yrs, by = length_yrs / 10),
+      seq(base_year, base_year + length_yrs, by = length_yrs / 10),
+      seq(base_year + length_yrs, base_year, by = -length_yrs / 10))
    graphics::par(mar = rep(0.8, 4))
    
-
-   if (group_specific) {
+   gp_start <- integer(length = 0)
+   gp_end <- integer(length = 0)
+   gp_n <- integer(length = 0)
+      if (group_specific) {
       # Calculate the dimensions of the grid of plots
       g_rows <- 12
       cut_points <- c(297, 250, 198, 160, 119, 90, 60, 40, 21, 12, 3)
@@ -150,16 +147,14 @@ APCplot <- function(Lexis,
          maxz[group] <- max(Lexis[ , group])
          mint <- ifelse(minz[group] < mint, minz[group], mint)
          maxt <- ifelse(maxz[group] > maxt, maxz[group], maxt)
-         if (log_rates) minz[group] <- log(minz[group])
-         if (log_rates) maxz[group] <- log(maxz[group])
+         if (log_rates) {
+            minz[group] <- log(minz[group])
+            maxz[group] <- log(maxz[group])
+         }   
       }
-      if (log_rates) mint <- log(mint)
-      if (log_rates) maxt <- log(maxt) 
+      if (log_rates) {mint <- log(mint); maxt <- log(maxt)}
       drange <- maxt - mint
-      gp_start <- integer(length = 0)
-      gp_end <- integer(length = 0)
-      gp_n <- integer(length = 0)
-      for (group in sub_groups) {
+     for (group in sub_groups) {
          gp_start[group] <- 1 - (maxz[group] - mint) / drange
          gp_end[group] <- 1 - (minz[group] - mint) / drange
          gp_n[group] <- round(256L * (gp_end[group] - gp_start[group]))
@@ -169,8 +164,8 @@ APCplot <- function(Lexis,
       mint <- min(Lexis[, "Rates"]) 
       maxt <- max(Lexis[, "Rates"])
       if (log_rates) {mint <- log(mint); maxt <- log(maxt)}
-      gp_start["Rates"] <- c(0)
-      gp_end["Rates"] <- c(1)
+      gp_start["Rates"] <- c(0L)
+      gp_end["Rates"] <- c(1L)
       gp_n["Rates"] <- c(256L)
    }
    for(group in sub_groups) {

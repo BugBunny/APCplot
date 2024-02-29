@@ -8,7 +8,6 @@ APCplot(
   Lexis,
   base_year = 0L,
   length_yrs = 100L,
-  label_interval = 10L,
   contour_plot = FALSE,
   group_specific = TRUE,
   sub_groups = c("Men", "Women"),
@@ -26,8 +25,6 @@ columns. Store the rates for the total population in a column named "Rates".
 \item{base_year}{Initial birth cohort}
 
 \item{length_yrs}{Number of cohorts required}
-
-\item{label_interval}{Interval in years between axis labels}
 
 \item{contour_plot}{Draw a contour plot}
 
@@ -61,10 +58,7 @@ The function is implemented by torturing Martin Smith's \link{Ternary} package
 into drawing APC surfaces.
 }
 \examples{
-# Check whether there are any APC data in the working directory to be plotted
-errmsg <- "Create a Lexis object with setupHMDdata before running this code"
-try(if (file.exists("Lexis_GBRTENW.rda")==FALSE) stop(errmsg, call. = FALSE))
-load ("Lexis_GBRTENW.rda")
+use (Lexis_ATLANTIS)
 # Log rates for each sex
 APCplot(Lexis, base_year = 1922)
 # Contour plot of the log rates for the two sexes combined

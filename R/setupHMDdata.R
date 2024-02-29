@@ -36,13 +36,13 @@ setupHMDdata <- function(user,
                          base_year = 1922L,
                          length_yrs = 100L) {
    # Download the deaths and exposure counts for the Lexis triangles
-   fn <- paste0("Deaths_", country_id, ".rda")
-   if (file.exists(fn) == FALSE) {
+   fname <- paste0("Deaths_", country_id, ".rda")
+   if (file.exists(fname) == FALSE) {
       Deaths <- HMDHFDplus::readHMDweb(country_id, "Deaths_lexis",
          user, password)
-      save(Deaths, file = fn)
+      save(Deaths, file = fname)
    }  else {
-      load(fn)
+      load(fname)
    }
    fname <- paste0("Exposures_", country_id, ".rda")
    if (file.exists(fname) == FALSE) {
