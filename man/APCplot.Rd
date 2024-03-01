@@ -58,7 +58,8 @@ The function is implemented by torturing Martin Smith's \link{Ternary} package
 into drawing APC surfaces.
 }
 \examples{
-use (Lexis_ATLANTIS)
+# Load a Lexis data frame of death rates by age, period and cohort
+data(Lexis_ATLANTIS)
 # Log rates for each sex
 APCplot(Lexis, base_year = 1922)
 # Contour plot of the log rates for the two sexes combined

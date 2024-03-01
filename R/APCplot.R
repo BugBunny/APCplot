@@ -30,7 +30,8 @@
 #' @return R graphics plot that can be exported to multiple graphics formats.
 #' @export
 #' @examples
-#' use (Lexis_ATLANTIS)
+#' # Load a Lexis data frame of death rates by age, period and cohort
+#' data(Lexis_ATLANTIS)
 #' # Log rates for each sex
 #' APCplot(Lexis, base_year = 1922)
 #' # Contour plot of the log rates for the two sexes combined
