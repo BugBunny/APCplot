@@ -7,6 +7,8 @@
 APCplot(
   Lexis,
   base_year = 0L,
+  survey_year = 0L,
+  base_age = 0L,
   length_yrs = 100L,
   contour_plot = FALSE,
   group_specific = TRUE,
@@ -23,6 +25,10 @@ columns. Store the rates for the total population in a column named "Rates".
 \link{setupHMDdata} prepares Lexis objects from the HMD data for a country.}
 
 \item{base_year}{Initial birth cohort}
+
+\item{survey_year}{Year when retrospective data were collected}
+
+\item{base_age}{Youngest age supplying data}
 
 \item{length_yrs}{Number of cohorts required}
 
@@ -58,14 +64,14 @@ The function is implemented by torturing Martin Smith's \link{Ternary} package
 into drawing APC surfaces.
 }
 \examples{
-# Load a Lexis data frame of death rates by age, period and cohort
-data(Lexis_ATLANTIS)
-# Log rates for each sex
+## Load a Lexis data frame of death rates by age, period and cohort
+data(Lexis)
+## Log rates for each sex
 APCplot(Lexis, base_year = 1922)
-# Contour plot of the log rates for the two sexes combined
+## Contour plot of the log rates for the two sexes combined
 APCplot(Lexis, base_year = 1922, contour_plot = TRUE, group_specific = FALSE)
-# Ratios of the men's to the women's rates
+## Ratios of the men's to the women's rates
 APCplot(Lexis, base_year = 1922, group_ratios = TRUE, log_rates = FALSE)
-# Rates of change in the rates for each sex
+## Rates of change in the rates for each sex
 APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 }

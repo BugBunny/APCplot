@@ -19,6 +19,8 @@
 #' columns. Store the rates for the total population in a column named "Rates". 
 #' [setupHMDdata] prepares Lexis objects from the HMD data for a country.
 #' @param base_year Initial birth cohort
+#' @param survey_year Year when retrospective data were collected
+#' @param base_age Youngest age supplying data 
 #' @param length_yrs Number of cohorts required
 #' @param contour_plot Draw a contour plot
 #' @param group_specific Plot sub-groups (e.g. men and women) separately
@@ -30,18 +32,20 @@
 #' @return R graphics plot that can be exported to multiple graphics formats.
 #' @export
 #' @examples
-#' # Load a Lexis data frame of death rates by age, period and cohort
-#' data(Lexis_ATLANTIS)
-#' # Log rates for each sex
+#' ## Load a Lexis data frame of death rates by age, period and cohort
+#' data(Lexis)
+#' ## Log rates for each sex
 #' APCplot(Lexis, base_year = 1922)
-#' # Contour plot of the log rates for the two sexes combined
+#' ## Contour plot of the log rates for the two sexes combined
 #' APCplot(Lexis, base_year = 1922, contour_plot = TRUE, group_specific = FALSE)
-#' # Ratios of the men's to the women's rates
+#' ## Ratios of the men's to the women's rates
 #' APCplot(Lexis, base_year = 1922, group_ratios = TRUE, log_rates = FALSE)
-#' # Rates of change in the rates for each sex
+#' ## Rates of change in the rates for each sex
 #' APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 APCplot <- function(Lexis,
                     base_year = 0L,
+                    survey_year = 0L,
+                    base_age = 0L,
                     length_yrs = 100L,
                     contour_plot = FALSE,
                     group_specific = TRUE,
@@ -121,15 +125,23 @@ APCplot <- function(Lexis,
    }
     
    # The period axis should run in reverse order to that on a true ternary plot
-   lexis_labels <- list(seq(0, length_yrs, by = length_yrs / 10),
-      seq(base_year, base_year + length_yrs, by = length_yrs / 10),
-      seq(base_year + length_yrs, base_year, by = -length_yrs / 10))
+   if (survey_year > 0) base_year <- survey_year - length_years
+   intvl <- ifelse(length_yrs <= 50, 5, 10)
+   lexis_labels <- if (base_year == 0) {
+      list(seq(base_age, base_age + length_yrs, by = intvl),
+         seq(base_age + length_yrs, base_age, by = -intvl),
+         seq(0, length_yrs, by = intvl))  
+   } else {
+      list(seq(base_age, base_age + length_yrs, by = intvl),
+         seq(base_year, base_year + length_yrs, by = intvl),
+         seq(base_year + length_yrs, base_year, by = -intvl))
+   }
    graphics::par(mar = rep(0.8, 4))
    
    gp_start <- integer(length = 0)
    gp_end <- integer(length = 0)
    gp_n <- integer(length = 0)
-      if (group_specific) {
+   if (group_specific) {
       # Calculate the dimensions of the grid of plots
       g_rows <- 12
       cut_points <- c(297, 250, 198, 160, 119, 90, 60, 40, 21, 12, 3)
@@ -175,9 +187,11 @@ APCplot <- function(Lexis,
       gp_ratios <- ifelse(group_ratios, " Ratios of the", "")
       deltas <- ifelse(change_in_rates, " Changes in the", "")
       plot_title <- paste(logged, gp_ratios, deltas, group)
-      # Plot the grid for the current group 
-      TernaryPlot(alab = "Age", blab = "Cohort", clab = "Period",
-                  axis.labels = lexis_labels, main = plot_title)
+      # Plot the grid for the current group
+      rgn <- list(min = c(0, 0, length_yrs), max = c(length_yrs, length_yrs, 0))
+      TernaryPlot(alab = "Age", blab = "Cohort", clab = "Period", region = rgn,
+         grid.lines = ceiling(length_yrs / intvl), axis.labels = lexis_labels, 
+         main = plot_title)
       
       # Plot either the individual APC rates or a contour plot
       if (!contour_plot) {
