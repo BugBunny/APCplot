@@ -1,9 +1,9 @@
 ---
 title: "APCplot"
 author: "Ian Timæus"
-date: "27/02/2024"
+date: "3/03/2024"
 output: "R graphics plot (can be saved to various formats)"
-version: "0.2.2"
+version: "0.2.3"
 ---
 
 ## Plot age-period-cohort rates on a grid of equilateral triangles using R
@@ -57,6 +57,27 @@ APCplot(Lexis, base_year = 1922, group_ratios = TRUE, log_rates = FALSE)
 APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 ```
 ![image](https://github.com/BugBunny/APCplot/assets/10499045/69bc5076-553a-4dad-b277-c977894eed8f)
+
+
+### LifeCourses
+This function draws the life courses of one or more individuals on a Lexis plot represented as a grid of equilateral triangles. *LifeCourses* distinguishes exits due to death from those due to censoring. It can also plot the timing of up to threee different types of life event along the life course (e.g. marrying, giving birth and marital dissolution). Each individual can experience each type of event once, multiple times or not at all. The input vectors specifying the individuals' years of birth and ages at death and lists of vectors of other life events should all be the same length.
+```
+## Initialise life course histories for 4 individuals
+YearB <- c(1925, 1938, 1962, 2001)
+AgeD <- c(70, 80, 50, NA)
+evType <- "Birth of child"
+events <- list(NULL, c(17,26), c(32), NULL)
+evType2 <- "Marriage"
+events2 <- list(c(22, 40), c(16), c(25), NULL)
+evType3 <- "Marital dissolution"
+events3 <- list(c(28), NULL, NULL, NULL)
+Censored <- c(F, F, T, F)
+## Draw lexis diagram with cohort and period measured in calendar years
+PlotLifeCourses(YearB, AgeD, Events = events, EvType = evType,  
+                Events2 = events2, EvType2 = evType2, Events3 = events3, 
+                EvType3 = evType3, censored = Censored, survey_year = 2020)
+```
+![image](https://github.com/BugBunny/APCplot/assets/10499045/4fdb249f-e2b6-4b8e-8b6e-8af5e9bae15d)
 
 
 The R scripts were developed in R 4.3.2 under Windows 11.
