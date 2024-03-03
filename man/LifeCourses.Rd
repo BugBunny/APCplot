@@ -83,14 +83,14 @@ cLab = "Emigration"
 Censored <- c(F, F, T, F)
 
 ## Draw lexis diagram with cohort and period measured in calendar years
-PlotLifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
+LifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
                 Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
                 e3Label = e3Lab, censored = Censored, cLabel = cLab,
                survey_year = 2020)
 
 ## Redraw, indexing cohort and period as years before the end of observation
 YearB <- c(95, 82, 58, 19)
-PlotLifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
+LifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
                 Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
                 e3Label = e3Lab, censored = Censored, cLabel = cLab)
 }
