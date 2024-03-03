@@ -1,12 +1,12 @@
 Package: APCplot
 Type: Package
-Version: 0.2.2
-Date: 2024-02-27
+Version: 0.2.3
+Date: 2024-03-03
 Title: Triangular Age-Period-Cohort surfaces
-Description: Plot age-period-cohort surfaces (rates and rate ratios) on a grid
-   of equilateral triangles using Martin R Smith's Ternary package. An ancillary
-   function is provided to set up datasets from the Human Mortality Database for
-   use by APCplot.
+Description: Plot either age-period-cohort surfaces (rates and rate ratios) or 
+   individuals' life courses on a Lexis grid of equilateral triangles using 
+   Martin R Smith's Ternary package. An ancillary function is provided to set 
+   up datasets from the Human Mortality Database for use by APCplot.
 URL: https://github.com/BugBunny/APCplot
 Author: Ian Timaeus <ian.timaeus@lshtm.ac.uk> [aut, cre] (0000-0001-8011-4806)
 Maintainer: Ian Timaeus <ian.timaeus@lshtm.ac.uk>

@@ -3,25 +3,27 @@
 #' @description
 #' `LifeCourses` draws the life courses of one or more individuals on a
 #' Lexis plot represented as a grid of equilateral triangles. The vectors of 
-#' years of birth and ages at death and lists of othe life events should all 
+#' years of birth and ages at death and lists of other life events should all 
 #' refer to the same number of individuals (i.e. be the same length).
 #'
 #' @param YrB Vector of years of birth (either calendar years or years ago).
 #' @param AgeD Vector of ages at death or censoring in years
 #' @param censored Vector indicating whether individuals died or were censored
-#' @param Events List of vectors of ages at event (e.g. giving birth). NULL if none.
-#' @param EvType Name describing the event for use in the key e.g. "Births"
+#' @param dLabel Description of the type of exit used in the key.
+#' @param cLabel Description of the reason for censoring used in the key.
+#' @param Events List of vectors of age at events (e.g. giving birth). NULL if none.
+#' @param eLabel Description of the event used in the key e.g. "Births"
 #' @param Events2 List of vectors of ages at second type of event. NULL if none.
-#' @param EvType2 Name describing the event for use in the key e.g."Marriage"
+#' @param e2Label Description of the 2nd event used in the key e.g."Marriage"
 #' @param Events3 List of vectors of ages at third type of event. NULL if none. 
-#' @param EvType3 Name describing the event for use in the key e.g."Divorce"
+#' @param e3Label Description of the 3rd event used in the key e.g."Divorce"
 #' @param base_year Initial birth cohort
 #' @param survey_year Year in which retrospective data were collected
 #' @param base_age Youngest age supplying data 
 #' @param length_yrs Number of cohorts required
 #' @param exact_data Flags the use of exact ages/dates, rather than durations in 
 #' completed years
-#' @param plot_title Title
+#' @param plot_title Title for the plot
 #'
 #' @return R graphics plot that can be exported to multiple graphics formats.
 #' @export
@@ -30,40 +32,48 @@
 #' ## Initialise life course histories for 4 individuals
 #' YearB <- c(1925, 1938, 1962, 2001)
 #' AgeD <- c(70, 80, 50, NA)
-#' evType <- "Birth of child"
+#' eLab <- "Birth of child"
 #' events <- list(NULL, c(17,26), c(32), NULL)
-#' evType2 <- "Marriage"
+#' e2Lab <- "Marriage"
 #' events2 <- list(c(22, 40), c(16), c(25), NULL)
-#' evType3 <- "Marital dissolution"
+#' e3Lab <- "Marital dissolution"
 #' events3 <- list(c(28), NULL, NULL, NULL)
+#' cLab = "Emigration"
 #' Censored <- c(F, F, T, F)
 #' 
 #' ## Draw lexis diagram with cohort and period measured in calendar years
-#' LifeCourses(YearB, AgeD, Events = events, EvType = evType,  
-#'                 Events2 = events2, EvType2 = evType2, Events3 = events3, 
-#'                 EvType3 = evType3, censored = Censored, survey_year = 2020)
+#' PlotLifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
+#'                 Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
+#'                 e3Label = e3Lab, censored = Censored, cLabel = cLab,
+#'                survey_year = 2020)
 #' 
 #' ## Redraw, indexing cohort and period as years before the end of observation
 #' YearB <- c(95, 82, 58, 19)
-#' LifeCourses(YearB, AgeD, Events = events, EvType = evType,  
-#'                 Events2 = events2, EvType2 = evType2, Events3 = events3, 
-#'                 EvType3 = evType3, censored = Censored)
+#' PlotLifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
+#'                 Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
+#'                 e3Label = e3Lab, censored = Censored, cLabel = cLab)
 LifeCourses <- function(YrB,
                         AgeD,
                         censored = FALSE,
+                        dLabel = "Death",
+                        cLabel = "Loss to follow up",
                         Events = NULL,
-                        EvType = "",
+                        eLabel = "",
                         Events2 = NULL,
-                        EvType2 = "",
+                        e2Label = "",
                         Events3 = NULL,
-                        EvType3 = "",
+                        e3Label = "",
                         base_year = 0L,
                         survey_year = 0L,
                         base_age = 0L,
                         length_yrs = 100L,
                         exact_data = FALSE,
-                        plot_title = "Example") {
-library(Ternary)
+                        plot_title = "Individuals' Life Courses") {
+# Colour definitions
+colr1 <- "red3"
+colr2 <- "blue4"
+colr3 <- "orange3"
+colr4 <- "purple"
 # Set up axis labels   
 if (survey_year > 0) base_year <- survey_year - length_yrs
 intvl <- ifelse(length_yrs <= 50, 5, 10)
@@ -78,22 +88,22 @@ lexis_labels <- if (base_year == 0) {
         seq(base_year + length_yrs, base_year, by = -intvl))
 }
 # Set up legend
-evTypes <- c("Death", "Loss to follow-up")
+lcLabels <- c(dLabel, cLabel)
 symbs <- c(16, 1)
-evcols <- c("red3", "red3")
-if (EvType != "") {
-   evTypes <- c(evTypes, EvType)
-   evcols <- c(evcols, "blue4")
+lccolrs <- c(colr1, colr1)
+if (eLabel != "") {
+   lcLabels <- c(lcLabels, eLabel)
+   lccolrs <- c(lccolrs, colr2)
    symbs <- c(symbs, 16)
 }
-if (EvType2 != "") {
-   evTypes <- c(evTypes, EvType2)
-   evcols <- c(evcols, "orange")
+if (e2Label != "") {
+   lcLabels <- c(lcLabels, e2Label)
+   lccolrs <- c(lccolrs, colr3)
    symbs <- c(symbs, 16)
 }
-if (EvType3 != "") {
-   evTypes <- c(evTypes, EvType3)
-   evcols <- c(evcols, "purple")
+if (e3Label != "") {
+   lcLabels <- c(lcLabels, e3Label)
+   lccolrs <- c(lccolrs, colr4)
    symbs <- c(symbs, 16)   
 }
 # Draw the grid
@@ -121,16 +131,16 @@ N <- length(CohB)
 # Loop over individuals plotting details of their life courses
 for (i in 1:N) { 
    TernaryLines(list(c(0, CohB[i], YrB[i]), c(AgeD[i], CohB[i], YrD[i])),
-                col = "red3", lwd = 1.75)
+                col = colr1, lwd = 1.75)
    typ_pch <- ifelse(censored[i] == TRUE, 1, 16)
    e_coords <- c(AgeD[i], CohB[i], YrD[i])
    # Do not plot censored marker if censored at by the end of data collection
-   if (YrD[i] > 0) TernaryPoints(e_coords, col = "red3", pch = typ_pch)
+   if (YrD[i] > 0) TernaryPoints(e_coords, col = colr1, pch = typ_pch)
    # Plot up to three sets of life course events
    for (j in 1:3) {
-      if (j == 1) {events <- Events[[i]];  ecol <- "blue4"}
-      if (j == 2) {events <- Events2[[i]]; ecol <- "orange"}
-      if (j == 3) {events <- Events3[[i]]; ecol <- "purple"}
+      if (j == 1) {events <- Events[[i]];  ecolr <- colr2}
+      if (j == 2) {events <- Events2[[i]]; ecolr <- colr3}
+      if (j == 3) {events <- Events3[[i]]; ecolr <- colr4}
       e_coords <- list()
       # If no events of this type, length(events) == 0
       e_n <- length(events) 
@@ -142,11 +152,10 @@ for (i in 1:N) {
                if (AgeE > AgeD[i]) stop("event occurs after exit")
             e_coords[[length(e_coords) + 1]] <- c(AgeE, CohB[i], YrE)
          }
-         TernaryPoints(e_coords, col = ecol, pch = 16)
+         TernaryPoints(e_coords, col = ecolr, pch = 16)
       }
    }
 }
-legend("topright", legend = evTypes, pch = symbs, col = evcols,
-       cex = 0.75, bty = "n", pt.cex = 1.25, y.intersp = 0.75,
-       xpd = NA )     # Do not clip at edge of figure)
+legend("topright", legend = lcLabels, pch = symbs, col = lccolrs,
+       cex = 0.75, bty = "n", pt.cex = 1.25, y.intersp = 0.75, xpd = NA)
 }

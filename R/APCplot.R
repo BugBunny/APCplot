@@ -82,7 +82,7 @@ APCplot <- function(Lexis,
    }  # End of function LookUpRates
    
    N <- length(sub_groups)
-   if (N > 360) return("Error in APCplot() : unable to plot >360 sub-groups")
+   if (N > 360) return("Unable to plot >360 sub-groups")
    # Set rates of zero to a small +ve value if logging or calculating ratios
    cols_rates <- if ("Rates" %in% colnames(Lexis)) 
       c(sub_groups, "Rates") else sub_groups
@@ -112,7 +112,7 @@ APCplot <- function(Lexis,
    
    # To plot inter-group differences, store the rate ratios in Rates
    if (group_ratios) {
-      if (N > 2) return("Error in APCplot() : for group ratios, supply 2 names")
+      if (N != 2) return("To plot sub-group ratios, supply TWO sub-group names")
       Lexis[ , "Rates"] <- Lexis[ , sub_groups[1]] / Lexis[ , sub_groups[2]]
       # Discard tails so there's more visible variation to look at
       if (!contour_plot) {
