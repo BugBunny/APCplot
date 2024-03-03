@@ -60,24 +60,27 @@ APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 
 
 ### LifeCourses
-This function draws the life courses of one or more individuals on a Lexis plot represented as a grid of equilateral triangles. *LifeCourses* distinguishes exits due to death from those due to censoring. It can also plot the timing of up to threee different types of life event along the life course (e.g. marrying, giving birth and marital dissolution). Each individual can experience each type of event once, multiple times or not at all. The input vectors specifying the individuals' years of birth and ages at death and lists of vectors of other life events should all be the same length.
+This function draws the life courses of one or more individuals on a Lexis plot represented as a grid of equilateral triangles. *LifeCourses* distinguishes exits due to death from those due to censoring. It can also plot the timing of up to three different types of life event along the life course (e.g. marrying, giving birth and marital dissolution). Each individual can experience each type of event once, multiple times, or not at all. The input vectors specifying the individuals' years of birth and ages at death and lists of vectors of other life events should all be the same length.
 ```
 ## Initialise life course histories for 4 individuals
 YearB <- c(1925, 1938, 1962, 2001)
 AgeD <- c(70, 80, 50, NA)
-evType <- "Birth of child"
+eLab <- "Birth of child"
 events <- list(NULL, c(17,26), c(32), NULL)
-evType2 <- "Marriage"
+e2Lab <- "Marriage"
 events2 <- list(c(22, 40), c(16), c(25), NULL)
-evType3 <- "Marital dissolution"
+e3Lab <- "Marital dissolution"
 events3 <- list(c(28), NULL, NULL, NULL)
+cLab <- "Emigration"
 Censored <- c(F, F, T, F)
 ## Draw lexis diagram with cohort and period measured in calendar years
-PlotLifeCourses(YearB, AgeD, Events = events, EvType = evType,  
-                Events2 = events2, EvType2 = evType2, Events3 = events3, 
-                EvType3 = evType3, censored = Censored, survey_year = 2020)
+PlotLifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
+                Events2 = events2, e2Label = e2Lab, Events3 = events3, 
+                e3Label = e3Lab, censored = Censored, cLabel = cLab
+                survey_year = 2020)
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/4fdb249f-e2b6-4b8e-8b6e-8af5e9bae15d)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/d2d1485f-89e9-475b-bf64-55264214dedd)
+
 
 
 The R scripts were developed in R 4.3.2 under Windows 11.
