@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 Ancillary*
 ^LICENSE\.md$
+^data-raw$

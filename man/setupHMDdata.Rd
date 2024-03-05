@@ -35,8 +35,8 @@ function has not yet been generalized for use with axes of differing length
 }
 \examples{
 ## Load synthetic data files as the real HMD ones are password protected
-Data(Deaths)
-Data(Exposure)
+data(Deaths)
+data(Exposures)
 
 ## For the avoidance of doubt, Atlantis isn't real and neither are these data
 id <- "ATLANTIS"

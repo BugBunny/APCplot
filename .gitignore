@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 Ancillary*
+data-raw/
+Deaths_GBRTENW.rda
+Exposures_GBRTENW.rda
