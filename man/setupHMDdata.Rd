@@ -4,13 +4,7 @@
 \alias{setupHMDdata}
 \title{Set up HMD data for input to APCplot}
 \usage{
-setupHMDdata(
-  user,
-  password,
-  country_id = "GBRTENW",
-  base_year = 1922L,
-  length_yrs = 100L
-)
+setupHMDdata(user, password, country_id, base_year = 1922L, length_yrs = 100L)
 }
 \arguments{
 \item{user}{The email address used to create an HMD account.}
@@ -40,9 +34,12 @@ function has not yet been generalized for use with axes of differing length
 (e.g. 50 years of data on ages 0 to 99).
 }
 \examples{
-yourID <- readline(prompt = "Input HMD user id (without quotes): ")
-yourPW <- readline(prompt = "Input HMD password (without quotes): ")
-id <- "GBRTENW"
-Lexis <- setupHMDdata(user = yourID, password = yourPW, country_id = id, base_year = 1922)
-save(Lexis, file = paste0("Lexis_", id, ".rda"))
+## Load synthetic data files as the real HMD ones are password protected
+Data(Deaths)
+Data(Exposure)
+
+## For the avoidance of doubt, Atlantis isn't real and neither are these data
+id <- "ATLANTIS"
+Lexis <- setupHMDdata(user = yourID, password = yourPW, country_id = id, 
+base_year = 1921)
 }

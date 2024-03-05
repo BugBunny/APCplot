@@ -7,7 +7,8 @@
 #' refer to the same number of individuals (i.e. be the same length).
 #'
 #' @param YrB Vector of years of birth (either calendar years or years ago).
-#' @param AgeD Vector of ages at death or censoring in years
+#' @param AgeD Vector of ages at death or censoring in years (Set to NA if
+#' alive when observation ends by design)
 #' @param censored Vector indicating whether individuals died or were censored
 #' @param dLabel Description of the type of exit used in the key.
 #' @param cLabel Description of the reason for censoring used in the key.
@@ -39,18 +40,18 @@
 #' e3Lab <- "Marital dissolution"
 #' events3 <- list(c(28), NULL, NULL, NULL)
 #' cLab = "Emigration"
-#' Censored <- c(F, F, T, F)
+#' Censored <- c(FALSE, FALSE, TRUE, FALSE)
 #' 
 #' ## Draw lexis diagram with cohort and period measured in calendar years
 #' LifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
-#'                 Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
+#'                 Events2 = events2, e2Label = e2Lab, Events3 = events3, 
 #'                 e3Label = e3Lab, censored = Censored, cLabel = cLab,
 #'                survey_year = 2020)
 #' 
 #' ## Redraw, indexing cohort and period as years before the end of observation
 #' YearB <- c(95, 82, 58, 19)
 #' LifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
-#'                 Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
+#'                 Events2 = events2, e2Label = e2Lab, Events3 = events3, 
 #'                 e3Label = e3Lab, censored = Censored, cLabel = cLab)
 LifeCourses <- function(YrB,
                         AgeD,
@@ -87,10 +88,58 @@ lexis_labels <- if (base_year == 0) {
         seq(base_year, base_year + length_yrs, by = intvl),
         seq(base_year + length_yrs, base_year, by = -intvl))
 }
+# Draw the grid
+rgn <- list(min = c(0, 0, length_yrs), max = c(length_yrs, length_yrs, 0))
+Ternary::TernaryPlot(alab = "Age", blab = "Cohort", clab = "Period", 
+   region = rgn, grid.lines = ceiling(length_yrs / intvl), 
+   axis.labels = lexis_labels,main = plot_title)
+
+# Recode dates of events, reversing either the period or cohort axis
+midyr <- ifelse(exact_data, 0, 0.5)
+YrB <- YrB + midyr
+YrB <- (if (base_year > 0) base_year + length_yrs - YrB else YrB) / 100
+CohB <- 1 - YrB
+# If censored by end of observation, not loss or withdrawal, set AgeD to time 0
+AgeD <- ifelse(is.na(AgeD), YrB, (AgeD + midyr)/100)
+YrD <- YrB - AgeD
+if (any(YrD < 0)) return("LifeCourses: age at exit in the future")
+## Do not plot an end marker if censored by the end of data collection
+typ_pch <- ifelse(YrD == 0, NA, ifelse(censored,  1, 16))
+# Loop over individuals plotting details of their life courses
+N <- length(CohB)
+for (i in 1:N) { 
+   Ternary::TernaryLines(list(c(0, CohB[i], YrB[i]), c(AgeD[i], CohB[i], 
+      YrD[i])), col = colr1, lwd = 1.75)
+   e_coords <- c(AgeD[i], CohB[i], YrD[i])
+   Ternary::TernaryPoints(e_coords, col = colr1, pch = typ_pch[i])
+   # Plot up to three sets of life course events
+   for (j in 1:3) {
+      if (j == 1) {events <- Events[[i]];  ecolr <- colr2}
+      if (j == 2) {events <- Events2[[i]]; ecolr <- colr3}
+      if (j == 3) {events <- Events3[[i]]; ecolr <- colr4}
+      # If no events of this type, length(events) == 0
+      e_n <- length(events) 
+      if (e_n > 0) {
+         AgeE <- (events + midyr) / 100
+         if (any(AgeE > AgeD[i])) return("LifeCourses: event occurs after exit")
+         YrE <- YrB[i] - AgeE
+         e_coords <- list()         
+         for (k in 1:e_n) {
+            e_coords[[length(e_coords) + 1]] <- c(AgeE[k], CohB[i], YrE[k])
+         }
+         Ternary::TernaryPoints(e_coords, col = ecolr, pch = 16)
+      }
+   }
+}
 # Set up legend
-lcLabels <- c(dLabel, cLabel)
-symbs <- c(16, 1)
-lccolrs <- c(colr1, colr1)
+lcLabels <- dLabel
+symbs <- 16
+lccolrs <- colr1
+if (any(censored)) {
+   lcLabels <- c(dLabel, cLabel)
+   symbs <- c(16, 1)
+   lccolrs <- c(colr1, colr1)
+}      
 if (eLabel != "") {
    lcLabels <- c(lcLabels, eLabel)
    lccolrs <- c(lccolrs, colr2)
@@ -106,56 +155,6 @@ if (e3Label != "") {
    lccolrs <- c(lccolrs, colr4)
    symbs <- c(symbs, 16)   
 }
-# Draw the grid
-rgn <- list(min = c(0, 0, length_yrs), max = c(length_yrs, length_yrs, 0))
-TernaryPlot(alab = "Age", blab = "Cohort", clab = "Period", region = rgn,
-   grid.lines = ceiling(length_yrs / intvl), axis.labels = lexis_labels, 
-   main = plot_title)
-
-# Recode dates of events reversing either the period or cohort axis
-midyr <- ifelse(exact_data, 0, 0.5)
-YrB <- YrB + midyr
-YrB <- (if (base_year > 0) base_year + length_yrs - YrB else YrB) / 100
-CohB <- 1 - YrB
-# If censored by end of observation, not loss or withdrawal, set AgeD to time 0
-for (i in 1:length(YrB)) {
-   if (is.null(AgeD[i]) | is.na(AgeD[i])) {
-      AgeD[i] <- YrB[i] 
-   } else { 
-      AgeD[i] <- (AgeD[i] + midyr) / 100
-   } 
-}
-YrD <- YrB - AgeD
-if (any(YrD < 0)) stop("age at death in the future")
-N <- length(CohB)
-# Loop over individuals plotting details of their life courses
-for (i in 1:N) { 
-   TernaryLines(list(c(0, CohB[i], YrB[i]), c(AgeD[i], CohB[i], YrD[i])),
-                col = colr1, lwd = 1.75)
-   typ_pch <- ifelse(censored[i] == TRUE, 1, 16)
-   e_coords <- c(AgeD[i], CohB[i], YrD[i])
-   # Do not plot censored marker if censored at by the end of data collection
-   if (YrD[i] > 0) TernaryPoints(e_coords, col = colr1, pch = typ_pch)
-   # Plot up to three sets of life course events
-   for (j in 1:3) {
-      if (j == 1) {events <- Events[[i]];  ecolr <- colr2}
-      if (j == 2) {events <- Events2[[i]]; ecolr <- colr3}
-      if (j == 3) {events <- Events3[[i]]; ecolr <- colr4}
-      e_coords <- list()
-      # If no events of this type, length(events) == 0
-      e_n <- length(events) 
-      if (e_n > 0) {
-         for (k in 1:e_n) {
-            AgeE <- (events[[k]] + midyr) / 100
-            YrE <- YrB[i] - AgeE
-            if (length(YrE) > 0)
-               if (AgeE > AgeD[i]) stop("event occurs after exit")
-            e_coords[[length(e_coords) + 1]] <- c(AgeE, CohB[i], YrE)
-         }
-         TernaryPoints(e_coords, col = ecolr, pch = 16)
-      }
-   }
-}
-legend("topright", legend = lcLabels, pch = symbs, col = lccolrs,
+graphics::legend("topright", legend = lcLabels, pch = symbs, col = lccolrs,
        cex = 0.75, bty = "n", pt.cex = 1.25, y.intersp = 0.75, xpd = NA)
 }

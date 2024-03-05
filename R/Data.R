@@ -26,5 +26,50 @@
 #' @usage data(Lexis)
 #' @keywords datasets
 #' @source These are synthetic data
-#' @references Human Mortality Database: \url{mortality.org}
 "Lexis"
+#' Deaths data imported from the Human Mortality Database using HMDHFDplus
+#' 
+#' Data frame for input to \code{setupHMDdata}. This data frame mirrors the 
+#' datasets that can be downloaded from _Human Mortality Database_ data by
+#' registered users.
+#' 
+#' @format{ A data frame with 1000s of rows and 7 columns:}
+#' \itemize{
+#'    \item{\code{Year}}:  {Calendar year}
+#'    \item{\code{Age}}:  {Age in years}
+#'    \item{\code{Cohort}}:  {Birth year}
+#'    \item{\code{Female}}:  {Count of deaths of females}
+#'    \item{\code{Men}}:  {Count of deaths of males}
+#'    \item{\code{Total}}:  {Count of deaths of both sexes}
+#'    \item{\code{OpenInterval}}:  {TRUE for the open-ended age interval}
+#' }
+#' @docType data
+#' @name Deaths
+#' @usage data(Deaths)
+#' @keywords datasets
+#' @source These are synthetic data
+#' @references Human Mortality Database: \url{mortality.org}
+ "Deaths"
+ #' Exposure data imported from the Human Mortality Database using HMDHFDplus
+ #' 
+ #' Data frame for input to \code{setupHMDdata}. This data frame mirrors the 
+ #' datasets that can be downloaded from _Human Mortality Database_ data by
+ #' registered users.
+ #' 
+ #' @format{ A data frame with 1000s of rows and 7 columns:}
+ #' \itemize{
+ #'    \item{\code{Year}}:  {Calendar year}
+ #'    \item{\code{Age}}:  {Age in years}
+ #'    \item{\code{Cohort}}:  {Birth year}
+ #'    \item{\code{Female}}:  {Count of years of exposure of females}
+ #'    \item{\code{Men}}:  {Count of years of exposure of males}
+ #'    \item{\code{Total}}:  {Count of years of exposure of both sexes}
+ #'    \item{\code{OpenInterval}}:  {TRUE for the open-ended age interval}
+ #' }
+ #' @docType data
+ #' @name Exposures
+ #' @usage data(Exposures)
+ #' @keywords datasets
+ #' @source These are synthetic data
+ #' @references Human Mortality Database: \url{mortality.org}
+ "Exposures"

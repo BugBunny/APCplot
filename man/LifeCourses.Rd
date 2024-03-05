@@ -27,7 +27,8 @@ LifeCourses(
 \arguments{
 \item{YrB}{Vector of years of birth (either calendar years or years ago).}
 
-\item{AgeD}{Vector of ages at death or censoring in years}
+\item{AgeD}{Vector of ages at death or censoring in years (Set to NA if
+alive when observation ends by design)}
 
 \item{censored}{Vector indicating whether individuals died or were censored}
 
@@ -80,17 +81,17 @@ events2 <- list(c(22, 40), c(16), c(25), NULL)
 e3Lab <- "Marital dissolution"
 events3 <- list(c(28), NULL, NULL, NULL)
 cLab = "Emigration"
-Censored <- c(F, F, T, F)
+Censored <- c(FALSE, FALSE, TRUE, FALSE)
 
 ## Draw lexis diagram with cohort and period measured in calendar years
 LifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
-                Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
+                Events2 = events2, e2Label = e2Lab, Events3 = events3, 
                 e3Label = e3Lab, censored = Censored, cLabel = cLab,
                survey_year = 2020)
 
 ## Redraw, indexing cohort and period as years before the end of observation
 YearB <- c(95, 82, 58, 19)
 LifeCourses(YearB, AgeD, Events = events, eLabel = eLab,  
-                Events2 = events2, e2Label2 = e2Lab, Events3 = events3, 
+                Events2 = events2, e2Label = e2Lab, Events3 = events3, 
                 e3Label = e3Lab, censored = Censored, cLabel = cLab)
 }

@@ -34,7 +34,4 @@ from a base date and the period axis has been reversed. If time were being
 measured backward (e.g. as years before a date of fieldwork of 0), the cohort
 axis would need to be reversed instead.
 }
-\references{
-Human Mortality Database: \url{mortality.org}
-}
 \keyword{datasets}

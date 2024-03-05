@@ -94,7 +94,7 @@ APCplot <- function(Lexis,
    if (change_in_rates) {
       # Sort by period, within up and then down triangles, within age
       Lexis <- with(Lexis, Lexis[order(age, coh + per, per, 
-         decreasing = c(F, T, T)), ])
+         decreasing = c(FALSE, TRUE, TRUE)), ])
       # Calculate ratio of current to previous rate for all 3 columns of rates
       period_ratios <- function(x) {
          x <- x / c(-1, x[1:length(x) - 1])
@@ -125,7 +125,7 @@ APCplot <- function(Lexis,
    }
     
    # The period axis should run in reverse order to that on a true ternary plot
-   if (survey_year > 0) base_year <- survey_year - length_years
+   if (survey_year > 0) base_year <- survey_year - length_yrs
    intvl <- ifelse(length_yrs <= 50, 5, 10)
    lexis_labels <- if (base_year == 0) {
       list(seq(base_age, base_age + length_yrs, by = intvl),

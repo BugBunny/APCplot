@@ -25,33 +25,40 @@
 #' @export
 #'
 #' @examples
-#' yourID <- readline(prompt = "Input HMD user id (without quotes): ")
-#' yourPW <- readline(prompt = "Input HMD password (without quotes): ")
-#' id <- "GBRTENW"
-#' Lexis <- setupHMDdata(user = yourID, password = yourPW, country_id = id, base_year = 1922)
-#' save(Lexis, file = paste0("Lexis_", id, ".rda"))
+#' ## Load synthetic data files as the real HMD ones are password protected
+#' Data(Deaths)
+#' Data(Exposure)
+#' 
+#' ## For the avoidance of doubt, Atlantis isn't real and neither are these data
+#' id <- "ATLANTIS"
+#' Lexis <- setupHMDdata(user = yourID, password = yourPW, country_id = id, 
+#' base_year = 1921)
 setupHMDdata <- function(user,
                          password,
-                         country_id = "GBRTENW",
+                         country_id,
                          base_year = 1922L,
                          length_yrs = 100L) {
    # Download the deaths and exposure counts for the Lexis triangles
-   fname <- paste0("Deaths_", country_id, ".rda")
-   if (file.exists(fname) == FALSE) {
-      Deaths <- HMDHFDplus::readHMDweb(country_id, "Deaths_lexis",
-         user, password)
-      save(Deaths, file = fname)
-   }  else {
-      load(fname)
+   if (!exists("Deaths")) {
+      fname <- paste0("Deaths_", country_id, ".rda")
+      if (!file.exists(fname)) {
+         Deaths <- HMDHFDplus::readHMDweb(country_id, "Deaths_lexis",
+            user, password)
+         save(Deaths, file = fname)
+      }  else {
+         load(fname)
+      }
    }
-   fname <- paste0("Exposures_", country_id, ".rda")
-   if (file.exists(fname) == FALSE) {
-      Exposures <- HMDHFDplus::readHMDweb(country_id, "Exposures_lexis",
-         user, password)
-      save(Exposures, file = fname)
-   } else {
-     load(fname)
-   }
+   if (!exists("Exposures")) {
+      fname <- paste0("Exposures_", country_id, ".rda")
+      if (!file.exists(fname)) {
+         Exposures <- HMDHFDplus::readHMDweb(country_id, "Exposures_lexis",
+            user, password)
+         save(Exposures, file = fname)
+      } else {
+        load(fname)
+      }
+   }   
    # Calculate the APC death rates by Sex and for the two sexes combined
    Lexis <- cbind(Deaths[ , 1:3],
       Deaths$Female / Exposures$Female,
@@ -65,5 +72,6 @@ setupHMDdata <- function(user,
    Lexis[, "per"] <- base_year + length_yrs-1 - as.integer(Lexis[, "Year"])
    # Discard data on older ages and earlier dates (Data for the cohort born the 
    # year prior to the base_year is kept to calculate decline into cohort 0)
-   subset(Lexis, age < length_yrs & coh >= -1 &  per <= length_yrs)
+   Lexis <- 
+      with(Lexis, Lexis[age < length_yrs & coh >= -1 &  per <= length_yrs, ])
 }  # End of function setupHMDdata
