@@ -5,17 +5,14 @@
 \alias{Lexis}
 \title{Lexis data frame for plotting by APCplot}
 \format{
-{ A data frame with 10,200 rows and 9 columns:}
+{ A data frame with 10,200 rows and 6 columns:}
 \itemize{
-\item{\code{Year}}:  {Calendar year - (unused, copied from the HMD files)}
-\item{\code{Age}}:  {Age in years - (unused, copied from the HMD files)}
-\item{\code{Cohort}}:  {Birth year - (unused, copied from the HMD files)}
+\item{\code{age}}:  {Age index}
+\item{\code{coh}}:  {Cohort index \code{<- Year_of_birth - Base_year}}
+\item{\code{per}}:  {Reversed period index \code{<- Base_year+99 - Year}}#'
 \item{\code{Women}}:  {Women's death rates calculated as Deaths/Exposures}
 \item{\code{Men}}:  {Men's death rates calculated as Deaths/Exposures}
 \item{\code{Rates}}:  {Total death rates calculated as Deaths/Exposures}
-\item{\code{age}}:  {Age index \code{<- Age}}
-\item{\code{coh}}:  {Cohort index \code{<- Cohort - Base_year}}
-\item{\code{per}}:  {Reversed period index \code{<- Base_year+99 - Year}}
 }
 }
 \source{
@@ -25,13 +22,13 @@ These are synthetic data
 data(Lexis)
 }
 \description{
-\code{Lexis} data frame for input to \code{APCplot}. This data frame mirrors
-the datasets created from \emph{Human Mortality Database} data by
-\code{setupHMDdata} and is used by the examples in the \code{APCplot} help
-file. It also illustrative of the structure of Lexis data frames for anyone
-preparing them from scratch. N.B. In this dataset time is measured forward
-from a base date and the period axis has been reversed. If time were being
-measured backward (e.g. as years before a date of fieldwork of 0), the cohort
-axis would need to be reversed instead.
+\code{Lexis} data frame for input to \code{APCplot}. This data frame contains
+100 years of data and mirrors the datasets created from \emph{Human Mortality
+Database} data by \code{setupHMDdata}. It is used by the examples in the
+\code{APCplot} help file. It also illustrative of the structure of Lexis data
+frames for anyone preparing them from scratch. N.B. In this dataset time is
+measured forward from a base date and the period axis has been reversed. If
+time were being measured backward (e.g. as years before a date of fieldwork
+of 0), the cohort axis would need to be reversed instead.
 }
 \keyword{datasets}

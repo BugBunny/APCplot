@@ -5,7 +5,7 @@
 \alias{APCplot-package}
 \title{APCplot: Triangular Age-Period-Cohort surfaces}
 \description{
-Plot either age-period-cohort surfaces (rates and rate ratios) or individuals' life courses on a Lexis grid of equilateral triangles using Martin R Smith's Ternary package. An ancillary function is provided to set up datasets from the Human Mortality Database for use by APCplot.
+Plot either age-period-cohort surfaces (rates and rate ratios) or individuals' life courses on a Lexis grid of equilateral triangles using Martin R Smith's Ternary package. Ancillary functions are provided to set up datasets containing rates from the Human Mortality Database and from Demographic and Health Survey birth histories for plotting by APCplot.
 }
 \seealso{
 Useful links:

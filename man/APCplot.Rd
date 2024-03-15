@@ -12,17 +12,19 @@ APCplot(
   length_yrs = 100L,
   contour_plot = FALSE,
   group_specific = TRUE,
-  sub_groups = c("Men", "Women"),
+  total = NULL,
   group_ratios = FALSE,
   change_in_rates = FALSE,
-  log_rates = TRUE
+  log_rates = TRUE,
+  pct_trim = NULL
 )
 }
 \arguments{
 \item{Lexis}{Data frame with columns for age, per, coh and each set of rates.
 The first 3 columns index the coordinates of the rates contained in the other
 columns. Store the rates for the total population in a column named "Rates".
-\link{setupHMDdata} prepares Lexis objects from the HMD data for a country.}
+\link{APCmortHMD} prepares and plots Lexis mortality surfaces using HMD data
+\link{APCfertDHS} prepares and plots Lexis fertility surfaces from a DHS survey}
 
 \item{base_year}{Initial birth cohort}
 
@@ -36,14 +38,15 @@ columns. Store the rates for the total population in a column named "Rates".
 
 \item{group_specific}{Plot sub-groups (e.g. men and women) separately}
 
-\item{sub_groups}{Names of the sub-groups. These should match the column
-names used for each sub-group in the data frame}
+\item{total}{Add a plot for the total population to plots for sub-groups}
 
 \item{group_ratios}{Plot the ratio of the rates in a pair of sub-groups}
 
 \item{change_in_rates}{Plot the ratios of successive rates}
 
 \item{log_rates}{Plot the logged rates or rate ratios}
+
+\item{pct_trim}{Percentage of rates to trim from each extreme of the range}
 }
 \value{
 R graphics plot that can be exported to multiple graphics formats.

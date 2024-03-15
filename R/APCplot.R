@@ -17,18 +17,19 @@
 #' @param Lexis Data frame with columns for age, per, coh and each set of rates. 
 #' The first 3 columns index the coordinates of the rates contained in the other 
 #' columns. Store the rates for the total population in a column named "Rates". 
-#' [setupHMDdata] prepares Lexis objects from the HMD data for a country.
+#' [APCmortHMD] prepares and plots Lexis mortality surfaces using HMD data
+#' [APCfertDHS] prepares and plots Lexis fertility surfaces from a DHS survey
 #' @param base_year Initial birth cohort
 #' @param survey_year Year when retrospective data were collected
 #' @param base_age Youngest age supplying data 
 #' @param length_yrs Number of cohorts required
 #' @param contour_plot Draw a contour plot
 #' @param group_specific Plot sub-groups (e.g. men and women) separately
-#' @param sub_groups Names of the sub-groups. These should match the column
-#' names used for each sub-group in the data frame
+#' @param total Add a plot for the total population to plots for sub-groups 
 #' @param group_ratios Plot the ratio of the rates in a pair of sub-groups
 #' @param change_in_rates Plot the ratios of successive rates
 #' @param log_rates Plot the logged rates or rate ratios
+#' @param pct_trim Percentage of rates to trim from each extreme of the range 
 #' @return R graphics plot that can be exported to multiple graphics formats.
 #' @export
 #' @examples
@@ -49,10 +50,12 @@ APCplot <- function(Lexis,
                     length_yrs = 100L,
                     contour_plot = FALSE,
                     group_specific = TRUE,
-                    sub_groups = c("Men", "Women"),
+                    total = NULL,
                     group_ratios = FALSE,
                     change_in_rates = FALSE,
-                    log_rates = TRUE) {
+                    log_rates = TRUE,
+                    pct_trim = NULL) {
+   
    # Store the rates for a single plot in the format expected by Ternary
    LookUpRates <- function(a, b, c) {
       if (contour_plot) {
@@ -67,70 +70,81 @@ APCplot <- function(Lexis,
       }
       n_triangles <- length(a)
       work <- integer(length = n_triangles)
-      for (i in 1:n_triangles) if (c[i] >= 0) {
+      for (i in 1:n_triangles) if (c[i] >= 0L) {
          # Look up rates for this group in Lexis
          work[i] <- with(Lexis, Lexis[age==a[i] & coh==b[i] & per==c[i], group])
          work[i] <- ifelse(log_rates, log(work[i]), work[i])
          # For odd ages on contour plots, interpolate to offset by 0.5 of a year
-         if (contour_plot & (a[i] %% 2 != 0) & (b[i] > 1)) {
+         if (contour_plot & (a[i] %% 2 != 0) & (b[i] > 1L)) {
             work[i-1] <- (work[i-1] + work[i-2]) / 2
          }
       } else {
          work[i] <- work[i-1]
-      }      
+      } 
       return(work)
    }  # End of function LookUpRates
    
-   N <- length(sub_groups)
-   if (N > 360) return("Unable to plot >360 sub-groups")
-   # Set rates of zero to a small +ve value if logging or calculating ratios
-   cols_rates <- if ("Rates" %in% colnames(Lexis)) 
-      c(sub_groups, "Rates") else sub_groups
-   if (log_rates | group_ratios | change_in_rates) {
-      avoid_zeros <- function(x) replace(x, x == 0, 0.000001)
-      Lexis[cols_rates] <- sapply(Lexis[cols_rates], avoid_zeros)
+   ## Calculate N of Lexis surfaces to be plotted
+   N <- length(Lexis) - 3L
+   if (N == 1) group_specific <- FALSE
+   if (N > 360L) stop("Unable to plot >360 sub-groups")   
+   if (group_ratios) if (N != 3L) {
+      stop("To plot sub-group ratios, supply data on exactly TWO sub-groups") 
+   } else {   
+      group_specific <- FALSE
    }
+   if (is.null(total)) total <- if (group_specific & N > 3L) TRUE else FALSE
+   N <- if (group_specific) N - !total else 1L
+   sub_groups <- names(Lexis)[4:(3+N)]
+
+      # Set rates of zero to a small +ve value if logging or calculating ratios
+   if (log_rates | group_ratios | change_in_rates) {
+      avoid_zeros <- function(x) replace(x, x == 0, 0.00001)
+      Lexis[sub_groups] <- sapply(Lexis[sub_groups], avoid_zeros)
+   }
+
    # Calculate ratios of successive rates if required
    if (change_in_rates) {
       # Sort by period, within up and then down triangles, within age
       Lexis <- with(Lexis, Lexis[order(age, coh + per, per, 
          decreasing = c(FALSE, TRUE, TRUE)), ])
-      # Calculate ratio of current to previous rate for all 3 columns of rates
+      # Calculate ratio of current to previous rate for all columns of rates
       period_ratios <- function(x) {
-         x <- x / c(-1, x[1:length(x) - 1])
+         x <- x / c(-1L, x[1:length(x) - 1L])
+         x[1] <- x[2]
          # Discard tails so there's more visible variation to look at
-         if (!contour_plot) {
-            left <- stats::quantile(x, 0.01, na.rm = TRUE)
-            right <- stats::quantile(x, 0.99, na.rm = TRUE)
+         if ( ! contour_plot) {
+            pct_trim <- if (is.null(pct_trim)) 0.01 else pct_trim/100
+            left <- stats::quantile(x, pct_trim, na.rm = TRUE)
+            right <- stats::quantile(x, 1 - pct_trim, na.rm = TRUE)
             x <- replace(replace(x, x<left, left), x>right, right)
          }
          return(x)
-      }
-      Lexis[cols_rates] <- sapply(Lexis[cols_rates], period_ratios)
+      } # End of function period_ratios
+      Lexis[sub_groups] <- sapply(Lexis[sub_groups], period_ratios)
    }
-   Lexis <- Lexis[Lexis[ , "coh"] >= 0, ]
-   
+   Lexis <- Lexis[Lexis[ , "coh"] >= 0L, ]
+
    # To plot inter-group differences, store the rate ratios in Rates
    if (group_ratios) {
-      if (N != 2) return("To plot sub-group ratios, supply TWO sub-group names")
-      Lexis[ , "Rates"] <- Lexis[ , sub_groups[1]] / Lexis[ , sub_groups[2]]
+      Lexis[ , "Rates"] <- Lexis[ , 4] / Lexis[ , 5]
       # Discard tails so there's more visible variation to look at
       if (!contour_plot) {
-         left <- stats::quantile(Lexis[ , "Rates"], 0.005, na.rm = TRUE)
-         right <- stats::quantile(Lexis[ , "Rates"], 0.995, na.rm = TRUE)
+         pct_trim <- if (is.null(pct_trim)) 0.005 else pct_trim/100
+         left <- stats::quantile(Lexis[ , "Rates"], pct_trim, na.rm = TRUE)
+         right <- stats::quantile(Lexis[ , "Rates"], 1 - pct_trim, na.rm = TRUE)
          vtrim <- function(x) replace(replace(x, x<left, left), x>right, right)
          Lexis[ , "Rates"] <- vtrim(Lexis[ , "Rates"])
       }
-      group_specific <- FALSE
    }
     
-   # The period axis should run in reverse order to that on a true ternary plot
-   if (survey_year > 0) base_year <- survey_year - length_yrs
-   intvl <- ifelse(length_yrs <= 50, 5, 10)
-   lexis_labels <- if (base_year == 0) {
+   # Either the period or cohort axis should run in reverse to a ternary plot
+   if (survey_year > 0L) base_year <- survey_year - length_yrs
+   intvl <- ifelse(length_yrs <= 50L, 5L, 10L)
+   lexis_labels <- if (base_year == 0L) {
       list(seq(base_age, base_age + length_yrs, by = intvl),
          seq(base_age + length_yrs, base_age, by = -intvl),
-         seq(0, length_yrs, by = intvl))  
+         seq(0L, length_yrs, by = intvl))  
    } else {
       list(seq(base_age, base_age + length_yrs, by = intvl),
          seq(base_year, base_year + length_yrs, by = intvl),
@@ -145,7 +159,7 @@ APCplot <- function(Lexis,
       # Calculate the dimensions of the grid of plots
       g_rows <- 12
       cut_points <- c(297, 250, 198, 160, 119, 90, 60, 40, 21, 12, 3)
-      for (i in 11:1) if (cut_points[i] >= N) g_rows <- i
+      for (i in 1:11) if (cut_points[i] >= N) g_rows <- 12L - i
       g_cols <- ceiling(N / g_rows)
       on.exit(graphics::par(mfrow = c(1, 1)))
       graphics::par(mfrow = c(g_rows, g_cols))
@@ -167,10 +181,10 @@ APCplot <- function(Lexis,
       }
       if (log_rates) {mint <- log(mint); maxt <- log(maxt)}
       drange <- maxt - mint
-     for (group in sub_groups) {
+      for (group in sub_groups) {
          gp_start[group] <- 1 - (maxz[group] - mint) / drange
          gp_end[group] <- 1 - (minz[group] - mint) / drange
-         gp_n[group] <- round(256L * (gp_end[group] - gp_start[group]))
+         gp_n[group] <- ceiling(256 * (gp_end[group] - gp_start[group]))
       }
    } else {
       sub_groups <- "Rates"      
@@ -186,17 +200,20 @@ APCplot <- function(Lexis,
       logged <- ifelse(log_rates, "Log", "")
       gp_ratios <- ifelse(group_ratios, " Ratios of the", "")
       deltas <- ifelse(change_in_rates, " Changes in the", "")
-      plot_title <- paste(logged, gp_ratios, deltas, group)
+      if (group_specific & total & group == "Rates") {
+         plot_title <- paste(logged, gp_ratios, deltas, "total")        
+      } else { 
+         plot_title <- paste(logged, gp_ratios, deltas, group)
+      }
       # Plot the grid for the current group
       rgn <- list(min = c(0, 0, length_yrs), max = c(length_yrs, length_yrs, 0))
       TernaryPlot(alab = "Age", blab = "Cohort", clab = "Period", region = rgn,
          grid.lines = ceiling(length_yrs / intvl), axis.labels = lexis_labels, 
          main = plot_title)
-      
       # Plot either the individual APC rates or a contour plot
-      if (!contour_plot) {
+      if ( ! contour_plot) {
          mySpectrum <- viridisLite::viridis(gp_n[group], alpha = 0.6,
-               begin = gp_start[group], end = gp_end[group], direction = -1)
+               begin = gp_start[group], end = gp_end[group], direction = -1L)
          values <- TernaryPointValues(LookUpRates, resolution = length_yrs)
          ColourTernary(values, spectrum = mySpectrum)
       } else {   
@@ -212,7 +229,7 @@ APCplot <- function(Lexis,
       palette = viridisLite::viridis(256L, alpha = 0.6, direction = -1),
       lwd = 20L,
       bty = "n",    # No framing box
-      inset = 0.02,
+      inset = 0.00,
       xpd = NA      # Do not clip at edge of figure
    )  
    invisible(values)
