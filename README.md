@@ -1,9 +1,9 @@
 ---
 title: "APCplot"
 author: "Ian Timæus"
-date: "3/03/2024"
+date: "15/03/2024"
 output: "R graphics plot (can be saved to various formats)"
-version: "0.2.3"
+version: "0.2.4"
 ---
 
 ## Plot age-period-cohort rates and life courses on a Lexis grid of equilateral triangles using R
@@ -14,29 +14,30 @@ Function that tortures Martin Smith's `Ternary` package <https://github.com/ms60
 2. Plots of the log measures or of the untransformed rates or ratios (`log_rates = FALSE`).
 
 For each of the above options, `APCplot` can produce:
-1. Plots for sub-groups (e.g. men and women) displayed on a grid.
-2. A single plot for the entire population (`group_specific = FALSE`).
+1. A single plot for the entire population (`group_specific = FALSE`).
+2. Plots for sub-groups (e.g. for men and women or for the urban and rural population) and, optionally , the total population (`total = TRUE`), displayed on a grid.
 3. A single plot showing the ratio of the rates in a pair of sub-groups (e.g. men:women) (`group_ratios = TRUE`).
 
 For any of the above options, it can either plot the individual APC rates for each triangle on the Lexis grid or produce a contour plot (`contour_plot = TRUE`).
 
 As input, `APCplot` expects a data frame that should include:
-1. Columns named `age`, `per` and `coh` whose rows cover the universe of possible combinations of values of the integer coordinates. The number of categories of `age`, `per` and `coh` can vary, but should be the same for all three axes (e.g. 0 to 99 in the case of mortality data, so that `length_yrs = 100`).
+1. Columns named `age`, `per` and `coh` whose rows cover the universe of possible combinations of values of the integer coordinates. The number of categories of `age`, `per` and `coh` can vary, but should be the same for all three axes (e.g. 0 to 99 in the case of mortality data, so that `length_yrs = 100` or 0 to 34 in the case of DHS bith history data so that `length_yrs = 35`).
 2. Either a series of named columns for each of the sub-groups (e.g. `Men` and `Women`), or a single column for the entire population named `Rates`. Each column should contain rates for every possible combination of values of `age`, `per` and `coh` (i.e. where `age + per + coh < length_yrs`).
 
-The data frame should usually contain *N* observations, where *N* is the square of the length of the age, period, and cohort vectors (so, for mortality, the dataset should have 10,000 observations). However, if one is plotting changes in the rates, one also needs to supply data for the cohort born in the year before the `base_year` as they are required to calculate the rate of change into the base year.
+The data frame should usually contain *N* observations, where *N* is the square of the length of the age, period, and cohort vectors (so, for mortality, the dataset should have 10,000 observations). However, if one is plotting changes in the rates, one also needs to supply data for the cohort born in the year before the `base_year`, if available, as they are required to calculate the rate of change into the base year.
 
-### setupHMDdata
-Ancillary function to download and reorganise mortality data from the Human Mortality Database (HMD) at <https://mortality.org> for passing to `APCplot`. Note that users must first register on the site in order to download the data. (Also note that, if you registered before June 2022, you need to re-register).
+### APCmortHMD
+Wrapper function for `APCplot` to download and reorganise mortality data from the Human Mortality Database (HMD) at <https://mortality.org> for passing to `APCplot` and plotting. Note that users must first register on the site in order to download the data. (Also note that, if you registered before June 2022, you need to re-register). The Lexis data frame that it produces can be saved in order to produce further plots from it.
 
 The country codes are listed in the data section of the HMD website. Note that not all countries have a century-long run of data and the plotting function has not yet been generalized for use with axes of differing length (e. g. 50 years of data on ages 0 to 99).
 
+### APCfertDHS
+Wrapper function for `APCplot` to import and reorganise fertility data from a Demographic and Health Survey (HMD) downloaded from <https://dhsprogram.com> for passing to `APCplot` and plotting.  Note that users must register on the site and apply for access to particular surveys before they can download the data. The Lexis data frame that it produces can be saved in order to produce further plots from it.
+
 ### Illustrative plots - Death rates in England and Wales
 ```
-## Import death rates to a data frame from the Human Mortality Database 
-Lexis <- setupHMDdata(your_user_id, your_password, country_id = "GBRTENW", base_year = 1922L, length_yrs = 100L)
-## Log rates for each sex
-APCplot(Lexis, base_year = 1922)
+## Import death rates to a data frame from the Human Mortality Database and plot the log rates for each sex
+Lexis <- APCmortHMD(your_user_id, your_password, country_id = "GBRTENW", base_year = 1922L, length_yrs = 100L)
 ```
 ![image](https://github.com/BugBunny/APCplot/assets/10499045/f5a3b785-010e-4648-b759-5e1d86308de4)
 
@@ -57,6 +58,13 @@ APCplot(Lexis, base_year = 1922, group_ratios = TRUE, log_rates = FALSE)
 APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
 ```
 ![image](https://github.com/BugBunny/APCplot/assets/10499045/69bc5076-553a-4dad-b277-c977894eed8f)
+
+```
+## Fertility rates from the 2017 Demographic and Health Survey of Rwanda
+APCfertDHS("RWIR70FL", fpath = mypath, log_rates = FALSE)
+```
+![image](https://github.com/BugBunny/APCplot/assets/10499045/03f9452a-33ee-4dce-9ea4-f8df480e1120)
+
 
 
 ### LifeCourses
