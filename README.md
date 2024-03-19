@@ -1,9 +1,9 @@
 ---
 title: "APCplot"
 author: "Ian Timæus"
-date: "15/03/2024"
+date: "19/03/2024"
 output: "R graphics plot (can be saved to various formats)"
-version: "0.2.4"
+version: "0.2.5"
 ---
 
 ## Plot age-period-cohort rates and life courses on a Lexis grid of equilateral triangles using R
@@ -37,7 +37,8 @@ Wrapper function for `APCplot` to import and reorganise fertility data from a De
 ### Illustrative plots - Death rates in England and Wales
 ```
 ## Import death rates to a data frame from the Human Mortality Database and plot the log rates for each sex
-Lexis <- APCmortHMD(your_user_id, your_password, country_id = "GBRTENW", base_year = 1922L, length_yrs = 100L)
+Lexis <- APCmortHMD(your_user_id, your_password, country_id = "GBRTENW",
+  base_year = 1922L, length_yrs = 100L, pct_trim = 0)
 ```
 ![image](https://github.com/BugBunny/APCplot/assets/10499045/f5a3b785-010e-4648-b759-5e1d86308de4)
 
@@ -55,15 +56,18 @@ APCplot(Lexis, base_year = 1922, group_ratios = TRUE, log_rates = FALSE)
 
 ```
 ## Rates of change in the rates for each sex
-APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
+APCplot(Lexis, base_year = 1922, change_in_rates = TRUE, pct_trim = 1)
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/69bc5076-553a-4dad-b277-c977894eed8f)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/4f2f74a3-85b8-41a5-96e9-2ea8b88e2e6c)
 
+
+### Illustrative plots - Fertility by household wealth quintile in Rwanda
 ```
 ## Fertility rates from the 2017 Demographic and Health Survey of Rwanda
-APCfertDHS("RWIR70FL", fpath = mypath, log_rates = FALSE)
+APCfertDHS("RWIR70FL", fpath = mypath, log_rates = FALSE, byVar = "v190")
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/03f9452a-33ee-4dce-9ea4-f8df480e1120)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/bcc40bf4-94e7-4204-b8c8-67fd6c096119)
+
 
 
 
@@ -87,7 +91,8 @@ PlotLifeCourses(YearB, AgeD, Events = events, eLabel = eLab,
                 e3Label = e3Lab, censored = Censored, cLabel = cLab
                 survey_year = 2020)
 ```
-![image](https://github.com/BugBunny/APCplot/assets/10499045/0edbb56f-69bb-4c89-a270-ff94d0ab77fa)
+![image](https://github.com/BugBunny/APCplot/assets/10499045/61ca6ccf-ae36-4393-b1be-f6d3ad148614)
+
 
 
 
