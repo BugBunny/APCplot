@@ -34,7 +34,7 @@
 #' data(DHSurvey)
 #' 
 #' APCfertDHS(ZZIR62FL, byVar = "v190")
-APCfertDHS <- function(survey,
+APCfertDHS <- function(survey ,
                          fpath = "",
                          byVar = NULL,
                          subsetVar = NULL,
@@ -65,7 +65,7 @@ DHSurvey <- within(DHSurvey, {
    e_upr <- ((v008 - v011)/12 - v012 + dayI - dayB) * v005 * expos_adj 
    e_lwr <- v005 * expos_adj - e_upr
 })
-## Aggregate exposure in period 0 by birth cohort for the two ages it is exposed
+## Aggregate exposure in period 0 by birth cohort for the two ages with exposure
 eu_temp <- e_upr_age <- stats::aggregate(DHSurvey$e_upr, 
    by = list(factor(DHSurvey[["v012"]])), sum)
 el_temp <- e_lwr_age <- stats::aggregate(DHSurvey$e_lwr, 
@@ -93,7 +93,7 @@ e_upr_age <- cbind(as.integer(e_upr_age[ , "Group.1"]) - 1L, 0L, e_upr_age)
 colnames(e_upr_age) <- c(apc_names, unprefixed, "Rates")
 e_lwr_age <- cbind(as.integer(e_lwr_age[ , "Group.1"]) - 2L, 0L, e_lwr_age)
 colnames(e_lwr_age) <- c(apc_names, unprefixed, "Rates")
-## Stack exposure in the two age groups and tidy up
+## Stack exposure in the two age groups and reverse the cohort index
 Exposures <- rbind(e_upr_age, e_lwr_age)
 Exposures[ , "coh"] <- length_yrs - as.integer(Exposures[ , "coh"])
 ## Add on exposure in earlier periods, rejuvenating age by a year each time
@@ -116,12 +116,11 @@ DHS_Long <- within(DHS_Long, {
    perB <- floor((v008 - b3)/12 + dayI - dayC)
    ageB <- floor((b3 - v011)/12 + dayC - dayB)
 })
-## Discard births before 15th birthday 
+## Discard births before 15th birthday
 DHS_Long <- DHS_Long[DHS_Long[ , "ageB"] >= base_age, ]
-Births <- stats::aggregate(DHS_Long$v005, by = list(factor(DHS_Long$ageB), 
+## Aggregate total births by age, period and cohort
+tempB <- stats::aggregate(DHS_Long$v005, by = list(factor(DHS_Long$ageB), 
    factor(DHS_Long$perB), factor(DHS_Long$v012)), sum)
-tempB <- Births
-unprefixed <- NULL
 ## Aggregate births within each age, cohort and period cell and reshape to wide
 if ( ! is.null(byVar)) {
    Births <-stats::aggregate(DHS_Long$v005, by = list(factor(DHS_Long$ageB),  
@@ -131,8 +130,11 @@ if ( ! is.null(byVar)) {
    unprefixed <- paste0("b-", sapply(strsplit(names(Births[4:length(Births)]),  
       "x."), function(x) (x[2])))
    Births <- with(Births, cbind(Births[order(Group.3, Group.2), ], tempB[ , 4]))
+} else {
+   Births <- tempB
+   unprefixed <- NULL
 }
-## Name birth variables differently from exposure ones for merge and re-index 
+## Re-index, naming birth variables differently from exposure ones for merge
 colnames(Births) <- c(apc_names, unprefixed, "b-Rates")
 Births[ , "age"] <- as.integer(Births[ , "age"]) - 1L
 Births[ , "per"] <- as.integer(Births[ , "per"]) - 1L

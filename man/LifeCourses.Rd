@@ -36,7 +36,7 @@ alive when observation ends by design)}
 
 \item{cLabel}{Description of the reason for censoring used in the key.}
 
-\item{Events}{List of vectors of age at events (e.g. giving birth). NULL if none.}
+\item{Events}{List of vectors of ages at first type of event. NULL if none.}
 
 \item{eLabel}{Description of the event used in the key e.g. "Births"}
 

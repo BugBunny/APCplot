@@ -14,9 +14,9 @@ APCplot(
   group_specific = TRUE,
   total = NULL,
   group_ratios = FALSE,
-  change_in_rates = FALSE,
+  period_ratios = FALSE,
   log_rates = TRUE,
-  pct_trim = NULL
+  pct_trim = 0.5
 )
 }
 \arguments{
@@ -42,7 +42,7 @@ columns. Store the rates for the total population in a column named "Rates".
 
 \item{group_ratios}{Plot the ratio of the rates in a pair of sub-groups}
 
-\item{change_in_rates}{Plot the ratios of successive rates}
+\item{period_ratios}{Plot the ratios of successive rates}
 
 \item{log_rates}{Plot the logged rates or rate ratios}
 
@@ -76,5 +76,5 @@ APCplot(Lexis, base_year = 1922, contour_plot = TRUE, group_specific = FALSE)
 ## Ratios of the men's to the women's rates
 APCplot(Lexis, base_year = 1922, group_ratios = TRUE, log_rates = FALSE)
 ## Rates of change in the rates for each sex
-APCplot(Lexis, base_year = 1922, change_in_rates = TRUE)
+APCplot(Lexis, base_year = 1922, period_ratios = TRUE)
 }

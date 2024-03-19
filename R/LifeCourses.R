@@ -12,7 +12,7 @@
 #' @param censored Vector indicating whether individuals died or were censored
 #' @param dLabel Description of the type of exit used in the key.
 #' @param cLabel Description of the reason for censoring used in the key.
-#' @param Events List of vectors of age at events (e.g. giving birth). NULL if none.
+#' @param Events List of vectors of ages at first type of event. NULL if none.
 #' @param eLabel Description of the event used in the key e.g. "Births"
 #' @param Events2 List of vectors of ages at second type of event. NULL if none.
 #' @param e2Label Description of the 2nd event used in the key e.g."Marriage"
@@ -76,42 +76,46 @@ colr2 <- "blue4"
 colr3 <- "orange3"
 colr4 <- "purple"
 # Set up axis labels   
-if (survey_year > 0) base_year <- survey_year - length_yrs
-intvl <- ifelse(length_yrs <= 50, 5, 10)
+if (survey_year > 0L) base_year <- survey_year - length_yrs
+intvl <- ifelse(length_yrs <= 50L, 5L, 10L)
 
-lexis_labels <- if (base_year == 0) {
-   list(seq(base_age, base_age + length_yrs, by = intvl),
-        seq(base_age + length_yrs, base_age, by = -intvl),
-        seq(0, length_yrs, by = intvl))  
-} else {
-   list(seq(base_age, base_age + length_yrs, by = intvl),
-        seq(base_year, base_year + length_yrs, by = intvl),
-        seq(base_year + length_yrs, base_year, by = -intvl))
-}
+lexis_labels <- if (base_year == 0L) {
+      list(seq(base_age, base_age + length_yrs, by = intvl),
+         seq(base_age + length_yrs, base_age, by = -intvl),
+         seq(0L, length_yrs, by = intvl))  
+   } else {
+      list(seq(base_age, base_age + length_yrs, by = intvl),
+         seq(base_year, base_year + length_yrs, by = intvl),
+         seq(base_year + length_yrs, base_year, by = -intvl))
+   }
 # Draw the grid
-rgn <- list(min = c(0, 0, length_yrs), max = c(length_yrs, length_yrs, 0))
+rgn <- list(min = c(0L, 0L, length_yrs), max = c(length_yrs, length_yrs, 0L))
 Ternary::TernaryPlot(alab = "Age", blab = "Cohort", clab = "Period", 
    region = rgn, grid.lines = ceiling(length_yrs / intvl), 
    axis.labels = lexis_labels,main = plot_title)
 
 # Recode dates of events, reversing either the period or cohort axis
-midyr <- ifelse(exact_data, 0, 0.5)
+midyr <- if (exact_data) 0 else 0.5
 YrB <- YrB + midyr
-YrB <- (if (base_year > 0) base_year + length_yrs - YrB else YrB) / 100
+YrB <- (if (base_year > 0L) base_year + length_yrs - YrB else YrB) / 100
 CohB <- 1 - YrB
 # If censored by end of observation, not loss or withdrawal, set AgeD to time 0
 AgeD <- ifelse(is.na(AgeD), YrB, (AgeD + midyr)/100)
 YrD <- YrB - AgeD
 if (any(YrD < 0)) return("LifeCourses: age at exit in the future")
-## Do not plot an end marker if censored by the end of data collection
-typ_pch <- ifelse(YrD == 0, NA, ifelse(censored,  1, 16))
+
 # Loop over individuals plotting details of their life courses
-N <- length(CohB)
-for (i in 1:N) { 
-   Ternary::TernaryLines(list(c(0, CohB[i], YrB[i]), c(AgeD[i], CohB[i], 
-      YrD[i])), col = colr1, lwd = 1.75)
-   e_coords <- c(AgeD[i], CohB[i], YrD[i])
-   Ternary::TernaryPoints(e_coords, col = colr1, pch = typ_pch[i])
+pch_type <- ifelse(censored, 1L, 16L)
+for (i in 1:length(CohB)) {
+   scoord <- c(0L, CohB[i], YrB[i])
+   ecoord <- c(AgeD[i], CohB[i], YrD[i])
+   if (YrD[i] < 0.0000001) {
+      Ternary::TernaryArrows(scoord, ecoord, col = colr1, lwd = 1.75,
+         length = 0.1, angle = 20) 
+   } else {
+      Ternary::TernaryLines(list(scoord, ecoord), col = colr1, lwd = 1.75)
+      Ternary::TernaryPoints(ecoord, col = colr1, pch = pch_type[i])
+   }
    # Plot up to three sets of life course events
    for (j in 1:3) {
       if (j == 1) {events <- Events[[i]];  ecolr <- colr2}
@@ -119,7 +123,7 @@ for (i in 1:N) {
       if (j == 3) {events <- Events3[[i]]; ecolr <- colr4}
       # If no events of this type, length(events) == 0
       e_n <- length(events) 
-      if (e_n > 0) {
+      if (e_n > 0L) {
          AgeE <- (events + midyr) / 100
          if (any(AgeE > AgeD[i])) return("LifeCourses: event occurs after exit")
          YrE <- YrB[i] - AgeE
