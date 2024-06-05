@@ -11,12 +11,12 @@
 #' 
 #' @format{ A data frame with 10,200 rows and 6 columns:}
 #' \itemize{
-#'    \item{\code{age}}:  {Age index} 
-#'    \item{\code{coh}}:  {Cohort index \code{<- Year_of_birth - Base_year}}
-#'    \item{\code{per}}:  {Reversed period index \code{<- Base_year+99 - Year}}#' 
-#'    \item{\code{Women}}:  {Women's death rates calculated as Deaths/Exposures}
-#'    \item{\code{Men}}:  {Men's death rates calculated as Deaths/Exposures}
-#'    \item{\code{Rates}}:  {Total death rates calculated as Deaths/Exposures}
+#'    \item{\code{age}}:  Age index
+#'    \item{\code{coh}}:  Cohort index \code{<- Year_of_birth - Base_year}
+#'    \item{\code{per}}:  Reversed period index \code{<- Base_year + 99 - Year}
+#'    \item{\code{Women}}:  Women's death rates calculated as Deaths/Exposures
+#'    \item{\code{Men}}:  Men's death rates calculated as Deaths/Exposures
+#'    \item{\code{Rates}}:  Total death rates calculated as Deaths/Exposures
 #' }
 #' @docType data
 #' @name Lexis
@@ -32,13 +32,13 @@
 #' 
 #' @format{ A data frame with 1000s of rows and 7 columns:}
 #' \itemize{
-#'    \item{\code{Year}}:  {Calendar year}
-#'    \item{\code{Age}}:  {Age in years}
-#'    \item{\code{Cohort}}:  {Birth year}
-#'    \item{\code{Female}}:  {Count of deaths of females}
-#'    \item{\code{Men}}:  {Count of deaths of males}
-#'    \item{\code{Total}}:  {Count of deaths of both sexes}
-#'    \item{\code{OpenInterval}}:  {TRUE for the open-ended age interval}
+#'    \item{\code{Year}}:  Calendar year
+#'    \item{\code{Age}}:  Age in years
+#'    \item{\code{Cohort}}:  Birth year
+#'    \item{\code{Female}}:  Count of deaths of females
+#'    \item{\code{Men}}:  Count of deaths of males
+#'    \item{\code{Total}}:  Count of deaths of both sexes
+#'    \item{\code{OpenInterval}}:  \code{TRUE} for the open-ended age interval
 #' }
 #' @docType data
 #' @name Deaths
@@ -55,13 +55,13 @@
  #' 
  #' @format{ A data frame with 1000s of rows and 7 columns:}
  #' \itemize{
- #'    \item{\code{Year}}:  {Calendar year}
- #'    \item{\code{Age}}:  {Age in years}
- #'    \item{\code{Cohort}}:  {Birth year}
- #'    \item{\code{Female}}:  {Count of years of exposure of females}
- #'    \item{\code{Men}}:  {Count of years of exposure of males}
- #'    \item{\code{Total}}:  {Count of years of exposure of both sexes}
- #'    \item{\code{OpenInterval}}:  {TRUE for the open-ended age interval}
+ #'    \item{\code{Year}}:  Calendar year
+ #'    \item{\code{Age}}:  Age in years
+ #'    \item{\code{Cohort}}:  Birth year
+ #'    \item{\code{Female}}:  Count of years of exposure of females
+ #'    \item{\code{Men}}:  Count of years of exposure of males
+ #'    \item{\code{Total}}:  Count of years of exposure of both sexes
+ #'    \item{\code{OpenInterval}}:  \code{TRUE} for the open-ended age interval
  #' }
  #' @docType data
  #' @name Exposures

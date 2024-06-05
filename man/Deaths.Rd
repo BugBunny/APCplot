@@ -7,13 +7,13 @@
 \format{
 { A data frame with 1000s of rows and 7 columns:}
 \itemize{
-\item{\code{Year}}:  {Calendar year}
-\item{\code{Age}}:  {Age in years}
-\item{\code{Cohort}}:  {Birth year}
-\item{\code{Female}}:  {Count of deaths of females}
-\item{\code{Men}}:  {Count of deaths of males}
-\item{\code{Total}}:  {Count of deaths of both sexes}
-\item{\code{OpenInterval}}:  {TRUE for the open-ended age interval}
+\item{\code{Year}}:  Calendar year
+\item{\code{Age}}:  Age in years
+\item{\code{Cohort}}:  Birth year
+\item{\code{Female}}:  Count of deaths of females
+\item{\code{Men}}:  Count of deaths of males
+\item{\code{Total}}:  Count of deaths of both sexes
+\item{\code{OpenInterval}}:  \code{TRUE} for the open-ended age interval
 }
 }
 \source{

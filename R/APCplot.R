@@ -79,6 +79,7 @@ LookUpRates <- function(a, b, c) {
          work[i-1] <- (work[i-1] + work[i-2]) / 2
       }
    } else {
+      ## Set the year after last to the last one to get the final contour points
       work[i] <- work[i-1]
    } 
    return(work)

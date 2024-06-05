@@ -7,12 +7,12 @@
 \format{
 { A data frame with 10,200 rows and 6 columns:}
 \itemize{
-\item{\code{age}}:  {Age index}
-\item{\code{coh}}:  {Cohort index \code{<- Year_of_birth - Base_year}}
-\item{\code{per}}:  {Reversed period index \code{<- Base_year+99 - Year}}#'
-\item{\code{Women}}:  {Women's death rates calculated as Deaths/Exposures}
-\item{\code{Men}}:  {Men's death rates calculated as Deaths/Exposures}
-\item{\code{Rates}}:  {Total death rates calculated as Deaths/Exposures}
+\item{\code{age}}:  Age index
+\item{\code{coh}}:  Cohort index \code{<- Year_of_birth - Base_year}
+\item{\code{per}}:  Reversed period index \code{<- Base_year+99 - Year}
+\item{\code{Women}}:  Women's death rates calculated as Deaths/Exposures
+\item{\code{Men}}:  Men's death rates calculated as Deaths/Exposures
+\item{\code{Rates}}:  Total death rates calculated as Deaths/Exposures
 }
 }
 \source{
